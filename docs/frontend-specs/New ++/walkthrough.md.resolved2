@@ -1,0 +1,69 @@
+# Dashboard Intelligence Hub — Walkthrough
+
+## What Was Built
+
+The main Dashboard (`/dashboard`) has been rebuilt from a simple KPI + tab layout into a **Case-Centric Intelligence Hub** with 6 analytical sections, RBAC-scoped rendering, and full interactivity.
+
+## Architecture Overview
+
+```mermaid
+graph TD
+    A["DashboardHome.tsx"] --> B["DashboardSmartFilters"]
+    A --> C["KPIStrip"]
+    A --> D["RiskIntelligencePanel"]
+    A --> E["PerformanceIntelligencePanel"]
+    A --> F["FairnessMonitoringPanel"]
+    A --> G["ActiveCasesTable (lazy)"]
+    A --> H["ActionFeed (lazy)"]
+    A --> I["RiskDrawer"]
+    A --> J["CreateCaseModal"]
+    K["DashboardLayout.tsx"] -->|"window event"| J
+    L["dashboardDataAdapter.ts"] --> A
+    M["useDashboardScope.ts"] --> A
+```
+
+## Files Created (14 new)
+
+| File | Purpose |
+|------|---------|
+| [dashboard.types.ts](file:///d:/مشروع/14-2-2026/2026-2-13/smart_performance_system/client/src/types/dashboard.types.ts) | All TypeScript models |
+| [dashboardDataAdapter.ts](file:///d:/مشروع/14-2-2026/2026-2-13/smart_performance_system/client/src/services/adapters/dashboardDataAdapter.ts) | Mock data adapter with 5-min cache |
+| [useDashboardScope.ts](file:///d:/مشروع/14-2-2026/2026-2-13/smart_performance_system/client/src/hooks/useDashboardScope.ts) | RBAC scope hook |
+| [dashboard.css](file:///d:/مشروع/14-2-2026/2026-2-13/smart_performance_system/client/src/styles/dashboard.css) | Dashboard-specific styles |
+| [KPIStrip.tsx](file:///d:/مشروع/14-2-2026/2026-2-13/smart_performance_system/client/src/components/features/dashboard/KPIStrip.tsx) | 5 KPI cards with sparklines |
+| [RiskIntelligencePanel.tsx](file:///d:/مشروع/14-2-2026/2026-2-13/smart_performance_system/client/src/components/features/dashboard/RiskIntelligencePanel.tsx) | Heatmap + distribution + trend + top 10 |
+| [RiskDrawer.tsx](file:///d:/مشروع/14-2-2026/2026-2-13/smart_performance_system/client/src/components/features/dashboard/RiskDrawer.tsx) | XAI factors + Open Case |
+| [PerformanceIntelligencePanel.tsx](file:///d:/مشروع/14-2-2026/2026-2-13/smart_performance_system/client/src/components/features/dashboard/PerformanceIntelligencePanel.tsx) | Trend + department bars |
+| [FairnessMonitoringPanel.tsx](file:///d:/مشروع/14-2-2026/2026-2-13/smart_performance_system/client/src/components/features/dashboard/FairnessMonitoringPanel.tsx) | 4 fairness indicator cards |
+| [ActiveCasesTable.tsx](file:///d:/مشروع/14-2-2026/2026-2-13/smart_performance_system/client/src/components/features/dashboard/ActiveCasesTable.tsx) | Active cases from store |
+| [ActionFeed.tsx](file:///d:/مشروع/14-2-2026/2026-2-13/smart_performance_system/client/src/components/features/dashboard/ActionFeed.tsx) | Feed with dismiss persistence |
+| [CreateCaseModal.tsx](file:///d:/مشروع/14-2-2026/2026-2-13/smart_performance_system/client/src/components/features/dashboard/CreateCaseModal.tsx) | Create Case dialog |
+| [DashboardSmartFilters.tsx](file:///d:/مشروع/14-2-2026/2026-2-13/smart_performance_system/client/src/components/features/dashboard/DashboardSmartFilters.tsx) | Sticky filter bar |
+| [dashboard-redesign-changelog.md](file:///d:/مشروع/14-2-2026/2026-2-13/smart_performance_system/client/docs/dashboard-redesign-changelog.md) | Changelog |
+
+## Files Modified (2)
+
+| File | Changes |
+|------|---------|
+| [DashboardHome.tsx](file:///d:/مشروع/14-2-2026/2026-2-13/smart_performance_system/client/src/pages/dashboard/DashboardHome.tsx) | Full rewrite — 6 sections with RBAC, progressive loading, lazy Suspense |
+| [DashboardLayout.tsx](file:///d:/مشروع/14-2-2026/2026-2-13/smart_performance_system/client/src/components/layout/DashboardLayout.tsx) | Topbar: search, create case, notifications, language toggle, profile dropdown |
+
+## Acceptance Test Verification Guide
+
+| Test | How to Verify |
+|------|---------------|
+| **AT-Dash-01** | Run `npm run dev`, navigate to `/dashboard`. All 6 sections should render with responsive grid layout. |
+| **AT-Filters-01** | Sticky filter bar visible below topbar. Change a filter → each widget shows skeleton independently. Click Reset → all filters clear. |
+| **AT-Risk-01** | Click any row in the Top 10 table → Risk Drawer slides in with risk score, XAI bars, intervention text, Open Case button, timeline. |
+| **AT-Case-01** | Click "Open Case" in Risk Drawer → check `localStorage` → key `smart-hr-cases-storage` should have new case → navigated to `/dashboard/cases`. |
+| **AT-RBAC-01** | Log in as `super_admin` → should see only Active Cases + Action Feed, no KPIs/Risk/Performance/Fairness. |
+| **AT-Perf-01** | On initial load, KPIs appear first. Scroll down — Active Cases and Action Feed lazy load (visible in Network/Performance DevTools). |
+| **AT-A11y-01** | Tab through all elements → focus rings visible. Check icon buttons for `aria-label` attributes. |
+| **AT-Docs-01** | File exists at [client/docs/dashboard-redesign-changelog.md](file:///d:/%D9%85%D8%B4%D8%B1%D9%88%D8%B9/14-2-2026/2026-2-13/smart_performance_system/client/docs/dashboard-redesign-changelog.md) with full list of changes. ✅ |
+
+## Key Design Decisions
+
+1. **SVG-only charts** — no library dependency for sparklines, trends, heatmap
+2. **Window event** — topbar "Quick Create Case" communicates with DashboardHome via `dashboard:create-case` custom event
+3. **Mock adapter** — swap body of [dashboardDataAdapter.ts](file:///d:/%D9%85%D8%B4%D8%B1%D9%88%D8%B9/14-2-2026/2026-2-13/smart_performance_system/client/src/services/adapters/dashboardDataAdapter.ts) to wire real API; zero changes to components needed
+4. **Dismiss persistence** — `dashboard_dismissed_feed` in localStorage ensures dismissed feed items survive refresh

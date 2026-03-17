@@ -1,0 +1,51 @@
+# Operational Intelligence Console (Employee Profile)
+
+This implementation plan outlines how to integrate the Employee Profile "Operational Intelligence Console" UI with the existing backend using a non-breaking Backend-for-Frontend (BFF) approach as requested.
+
+## Goal Description
+Implement the requested architecture for the Employee Profile Console. It will aggregate data from multiple existing services (employee, cases, risk/analytics) into a single, optimized set of endpoints under `/api/console/v1/employees/...`. The UI will fetch these endpoints with lazy-loading, caching, and explicit Role-Based Access Control (RBAC) data masking rules. 
+
+## User Review Required
+> [!NOTE] 
+> The backend seems to rely on an Express + InversifyJS stack. The BFF controller and service will be added directly to this application for now. Is this correct, or should it be a completely separate microservice repository?
+> 
+> Also, since we need caching per tab, I will use a simple in-memory `node-cache` (or standard memory Map) unless Redis is available and configured. Please let me know if you prefer Redis.
+
+## Proposed Changes
+
+### 1. `server` (Backend-for-Frontend Adapter)
+#### [NEW] `server/api/controllers/console-bff.controller.ts`
+- `GET /api/console/v1/employees/:id/profile`
+- `GET /api/console/v1/employees/:id/risk`
+- `POST /api/console/v1/employees/:id/cases`
+- `GET /api/console/v1/employees/:id/timeline`
+
+#### [NEW] `server/services/business/profile-aggregator.service.ts`
+- Handles the actual logic: fetching the core employee, risk factors, fairness metrics, etc.
+- Implements the field masking logic (e.g., removing `risk_score_exact` or hiding drivers if the role is restricted).
+
+#### [MODIFY] `server/api/index.ts`
+- Register `console-bff.controller.ts` with the Inversify DI container. 
+
+### 2. `client` (Frontend UI Updates)
+#### [MODIFY] `client/src/services/resources/profileDataAdapter.ts`
+- Replace existing localized (localStorage-based) mock logic with actual fetching to the new `/api/console/v1/employees/...` endpoints.
+
+#### [MODIFY] `client/src/pages/dashboard/EmployeeProfilePage.tsx`
+- Lazy-load tabs properly by only fetching the generic `profile?tabs=overview` on initial load.
+
+#### [MODIFY] `client/src/components/features/employees/profile/tabs/RiskTab.tsx` (and other tabs)
+- Implement Loading/Error states specifically for individual tabs that fetch their own data via `profileDataAdapter.getEmployeeRisk(id)`.
+
+## Verification Plan
+
+### Automated Tests
+- Run `npm run build` locally on the client and the server to ensure no TypeScript compilation errors.
+- Ensure existing `/api/v1` routes in `server` are unmodified, maintaining backward compatibility.
+
+### Manual Verification
+1. Start the server (`npm run start:dev` in `server`) and the client (`npm run dev` in `client`).
+2. Log in with an `HR` role and navigate to the Employee Profile. Wait for the page load; it should finish within < 2s (using the BFF).
+3. Open the `Risk` tab. Ensure a network request is made to `/api/console/v1/employees/.../risk` only at the time of switching to the tab.
+4. Log out, log in as a `Team Supervisor`, navigate to the same profile's Risk tab, and verify that detailed Risk Drivers and Salary data are masked or hidden.
+5. Create a Case from the UI and verify that it appears immediately in the timeline and cases list via the newly updated endpoints.

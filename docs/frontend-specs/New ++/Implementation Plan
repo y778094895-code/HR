@@ -1,0 +1,67 @@
+# Smart HR Client — Full UI/UX Redesign
+
+This document outlines the planned approach for redesigning the client application's UI/UX without altering any existing APIs or routing logic. The redesign focuses on implementing a modern styling system, adding multi-theme and accent color support, and creating a more professional layout.
+
+## Proposed Changes
+
+### 1. Design System Upgrade (Tokens, Themes, Accent)
+
+Extending the CSS variable system using standard HSL values (to ensure full compatibility with Tailwind `hsl(var(...))` mapping).
+
+#### [MODIFY] [index.css](file:///d:/%D9%85%D8%B4%D8%B1%D9%88%D8%B9/14-2-2026/2026-2-13/smart_performance_system/client/src/index.css)
+- Clean up duplicate OKLCH definition blocks and standardize the entire file to use `hsl` and `rem`.
+- Migrate `.dark` to `[data-theme="dark"]`.
+- Add `[data-theme="midnight"]` with a deep blue/indigo theme pattern.
+- Add `[data-theme="sand"]` with a warm light theme pattern.
+- Update `[data-accent="..."]` overrides to specifically target `--primary`, `--ring`, and relevant branding tokens.
+
+#### [MODIFY] [tailwind.config.cjs](file:///d:/%D9%85%D8%B4%D8%B1%D9%88%D8%B9/14-2-2026/2026-2-13/smart_performance_system/client/tailwind.config.cjs)
+- Remove `darkMode: ["class"]` to support the data-theme approach natively if needed, or update the selector configuration.
+
+#### [MODIFY] [AppearanceContext.tsx](file:///d:/%D9%85%D8%B4%D8%B1%D9%88%D8%B9/14-2-2026/2026-2-13/smart_performance_system/client/src/contexts/AppearanceContext.tsx)
+- Expand `ThemeType` to include `midnight` and `sand`.
+- Refactor the context to toggle `data-theme` on the HTML root element instead of adding/removing classes, streamlining theme switching.
+
+#### [MODIFY] [SettingsTabs.tsx](file:///d:/%D9%85%D8%B4%D8%B1%D9%88%D8%B9/14-2-2026/2026-2-13/smart_performance_system/client/src/components/features/settings/SettingsTabs.tsx)
+- Add the two new themes (`midnight`, `sand`) to the Appearance settings selector.
+- Retain local storage persistence.
+
+---
+
+### 2. Layout & Structure Redesign
+
+#### [MODIFY] [DashboardLayout.tsx](file:///d:/%D9%85%D8%B4%D8%B1%D9%88%D8%B9/14-2-2026/2026-2-13/smart_performance_system/client/src/components/layout/DashboardLayout.tsx)
+- Redesign sidebar using aesthetic, muted backgrounds, clear active states tied to the brand accent, and collapsible sections.
+- Redesign the global topbar to integrate user menus natively.
+- Apply structural improvements so main content spans nicely on all screens.
+
+#### [NEW] [PageHeader.tsx](file:///d:/%D9%85%D8%B4%D8%B1%D9%88%D8%B9/14-2-2026/2026-2-13/smart_performance_system/client/src/components/layout/PageHeader.tsx)
+- Create a reusable standard page header containing a `Title`, `Description`, and right-hand complementary actions slot.
+
+---
+
+### 3. Screen visual refresh
+
+#### [MODIFY] [Login.tsx](file:///d:/%D9%85%D8%B4%D8%B1%D9%88%D8%B9/14-2-2026/2026-2-13/smart_performance_system/client/src/pages/Login.tsx) & [Login.css](file:///d:/%D9%85%D8%B4%D8%B1%D9%88%D8%B9/14-2-2026/2026-2-13/smart_performance_system/client/src/pages/Login.css)
+- Implement modern centered card layout styling. 
+- Eliminate standard CSS overrides if they conflict with Tailwind tokens, relying fully on the utility classes.
+
+#### [MODIFY] existing Dashboard Pages (e.g. `PerformancePage.tsx`, `ReportsPage.tsx`, `EmployeesPage.tsx`)
+- Refactor top section of these pages to adopt the new `<PageHeader />`.
+- Enforce standard gap sizes and card boundaries to make grids look airy and robust.
+- Add skeleton loadings or modern empty states visually.
+
+#### [MODIFY] Existing ShadCN `ui` components (e.g. Buttons, Inputs, Tables)
+- Polish the components located in `src/components/ui` to guarantee radius, hover states, and standard interactions match the new cohesive token system.
+
+---
+
+## Verification Plan
+
+### Automated Checks
+- The project must compile successfully without TypeScript errors `npm run build` or `npm run typecheck` inside `client/`.
+
+### Manual Testing
+- Log in and navigate to `/dashboard/settings`. Change the theme to `Midnight` and the accent to `Purple`, verifying that the entire application dynamically switches colors and re-renders successfully.
+- Trigger RTL mode (Arabic) and confirm the sidebar correctly flips to the right side seamlessly, and table columns obey the directional alignment.
+- Verify that standard flows (viewing reports, viewing performance stats) haven't fundamentally broken data fetching. 

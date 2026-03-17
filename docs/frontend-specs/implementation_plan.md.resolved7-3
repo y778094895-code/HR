@@ -1,0 +1,49 @@
+# Eliminate Mock Data Implementation Plan
+
+## Goal Description
+The objective is to eliminate the use of mock data in all interfaces across the Smart HR Performance Management System. This involves updating frontend adapters to connect to backend APIs, and updating backend controllers/services to fetch data from PostgreSQL (using Drizzle ORM) instead of returning hardcoded values. Finally, missing or conflicting processes will be documented in `docs/process-analysis.md`.
+
+## User Review Required
+> [!CAUTION]
+> Removing mock data requires writing raw DB queries and aggregations for complex features like Fairness Analysis and ML Turnover Predictions. If exact algorithms run out of scope, basic SQL aggregations will be used as the source of truth, but they may differ from previous static mock numbers.
+
+## Proposed Changes
+
+### Frontend Adapters & Stores
+- **[client/src/stores/business/alert.store.ts](file:///d:/%D9%85%D8%B4%D8%B1%D9%88%D8%B9/14-2-2026/2026-2-13/smart_performance_system/client/src/stores/business/alert.store.ts)**
+  - **[MODIFY]**: Remove `MOCK_ALERTS`, `MOCK_EXPLANATIONS`, `MOCK_RECOMMENDATIONS`.
+  - Update `useAlertStore` to make HTTP calls to `/api/alerts` using Axios/fetch.
+- **[client/src/stores/business/case.store.ts](file:///d:/%D9%85%D8%B4%D8%B1%D9%88%D8%B9/14-2-2026/2026-2-13/smart_performance_system/client/src/stores/business/case.store.ts)**
+  - **[MODIFY]**: Remove `mockCases`. Connect to actual Cases API (if available, otherwise rely on local state syncing to the backend).
+- **[client/src/services/adapters/dashboardDataAdapter.ts](file:///d:/%D9%85%D8%B4%D8%B1%D9%88%D8%B9/14-2-2026/2026-2-13/smart_performance_system/client/src/services/adapters/dashboardDataAdapter.ts)**
+  - **[MODIFY]**: Remove `mockKPIs`, `mockRiskData`, `mockPerformanceData`, `mockFairnessData`, `mockFeedItems`.
+  - Make HTTP call to `/api/dashboard/stats`.
+- **[client/src/services/resources/profileDataAdapter.ts](file:///d:/%D9%85%D8%B4%D8%B1%D9%88%D8%B9/14-2-2026/2026-2-13/smart_performance_system/client/src/services/resources/profileDataAdapter.ts)**
+  - **[MODIFY]**: Remove logic that generates random predictive data based on ID seed. Call `/api/employees/:id/profile` bundle endpoint.
+
+### Backend Services (Drizzle ORM Integration)
+- **[server/api/controllers/dashboard.controller.ts](file:///d:/%D9%85%D8%B4%D8%B1%D9%88%D8%B9/14-2-2026/2026-2-13/smart_performance_system/server/api/controllers/dashboard.controller.ts)**
+  - **[MODIFY]**: Remove `this.mockKpis` and `this.mockTrends`.
+  - Inject `DashboardService` or query directly to aggregate total employees, average performance, turnover risk count, etc., using Drizzle.
+- **[server/services/business/performance.service.ts](file:///d:/%D9%85%D8%B4%D8%B1%D9%88%D8%B9/14-2-2026/2026-2-13/smart_performance_system/server/services/business/performance.service.ts)**
+  - **[MODIFY]**: Update [getPerformanceOverview](file:///d:/%D9%85%D8%B4%D8%B1%D9%88%D8%B9/14-2-2026/2026-2-13/smart_performance_system/server/services/business/performance.service.ts#11-26), [getEmployeesPerformance](file:///d:/%D9%85%D8%B4%D8%B1%D9%88%D8%B9/14-2-2026/2026-2-13/smart_performance_system/server/services/business/performance.service.ts#27-42), [getDepartmentsPerformance](file:///d:/%D9%85%D8%B4%D8%B1%D9%88%D8%B9/14-2-2026/2026-2-13/smart_performance_system/server/services/business/performance.service.ts#43-49) to run aggregations on `perfAssessments` and `perfKpiScores`.
+- **[server/services/business/turnover.service.ts](file:///d:/%D9%85%D8%B4%D8%B1%D9%88%D8%B9/14-2-2026/2026-2-13/smart_performance_system/server/services/business/turnover.service.ts)**
+  - **[MODIFY]**: Update [getRiskList](file:///d:/%D9%85%D8%B4%D8%B1%D9%88%D8%B9/14-2-2026/2026-2-13/smart_performance_system/server/services/business/turnover.service.ts#24-44) and [getRiskDetail](file:///d:/%D9%85%D8%B4%D8%B1%D9%88%D8%B9/14-2-2026/2026-2-13/smart_performance_system/server/services/business/turnover.service.ts#45-69) to remove fallback mock arrays (`rsk-1`, `rsk-2`). If DB is empty, return an empty array. Update [getMetrics](file:///d:/%D9%85%D8%B4%D8%B1%D9%88%D8%B9/14-2-2026/2026-2-13/smart_performance_system/server/services/business/turnover.service.ts#12-23) to aggregate `turnover-risk` table.
+- **[server/services/business/fairness.service.ts](file:///d:/%D9%85%D8%B4%D8%B1%D9%88%D8%B9/14-2-2026/2026-2-13/smart_performance_system/server/services/business/fairness.service.ts)**
+  - **[MODIFY]**: Update [getMetrics](file:///d:/%D9%85%D8%B4%D8%B1%D9%88%D8%B9/14-2-2026/2026-2-13/smart_performance_system/server/services/business/turnover.service.ts#12-23), [getComparison](file:///d:/%D9%85%D8%B4%D8%B1%D9%88%D8%B9/14-2-2026/2026-2-13/smart_performance_system/server/services/business/fairness.service.ts#43-53), [analyzeDepartment](file:///d:/%D9%85%D8%B4%D8%B1%D9%88%D8%B9/14-2-2026/2026-2-13/smart_performance_system/server/services/business/fairness.service.ts#62-68) to calculate actual disparity from DB or return empty metrics instead of mock arrays.
+- **[server/services/business/training.service.ts](file:///d:/%D9%85%D8%B4%D8%B1%D9%88%D8%B9/14-2-2026/2026-2-13/smart_performance_system/server/services/business/training.service.ts)**
+  - **[MODIFY]**: Update [getSkillGaps](file:///d:/%D9%85%D8%B4%D8%B1%D9%88%D8%B9/14-2-2026/2026-2-13/smart_performance_system/server/services/business/training.service.ts#11-30), [getRecommendations](file:///d:/%D9%85%D8%B4%D8%B1%D9%88%D8%B9/14-2-2026/2026-2-13/smart_performance_system/server/services/business/fairness.service.ts#54-61), [getTrainingEffectiveness](file:///d:/%D9%85%D8%B4%D8%B1%D9%88%D8%B9/14-2-2026/2026-2-13/smart_performance_system/server/services/business/training.service.ts#72-92) to query DB logic or return empty.
+- **[server/services/business/employee.service.ts](file:///d:/%D9%85%D8%B4%D8%B1%D9%88%D8%B9/14-2-2026/2026-2-13/smart_performance_system/server/services/business/employee.service.ts)**
+  - **[MODIFY]**: Remove [enhanceWithPredictions](file:///d:/%D9%85%D8%B4%D8%B1%D9%88%D8%B9/14-2-2026/2026-2-13/smart_performance_system/server/services/business/employee.service.ts#99-106) mock logic and use real DB links or return as-is.
+
+### Documentation
+- **`docs/process-analysis.md`**
+  - **[NEW]**: Document all identified missing (e.g., endpoints without DB tables), duplicate, or conflicting processes.
+
+## Verification Plan
+### Automated Tests
+- Run backend tests: `cd server && npm test`
+- Run frontend linter/build to ensure types map correctly: `cd client && npm run build`
+
+### Manual Verification
+- Start the server using `npm run dev` in `server` and test the Dashboard and Alerts Center through the API and observe that no mock data is displayed (empty states or DB seeded states will appear).

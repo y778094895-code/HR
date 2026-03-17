@@ -1,0 +1,229 @@
+{
+    "common": {
+        "loading": "Loading...",
+        "saveChanges": "Save Changes",
+        "logout": "Logout",
+        "search": "Search...",
+        "searchPlaceholder": "Search...",
+        "reset": "Reset",
+        "exporting": "Exporting...",
+        "pdf": "PDF",
+        "excel": "Excel",
+        "noData": "No data available",
+        "comingSoon": "Coming Soon",
+        "department": "Department",
+        "status": "Status",
+        "period": "Period",
+        "select": "Select",
+        "active": "Active",
+        "inactive": "Inactive",
+        "pending": "Pending",
+        "engineering": "Engineering",
+        "sales": "Sales",
+        "marketing": "Marketing",
+        "hr": "HR",
+        "product": "Product",
+        "view": "View",
+        "edit": "Edit",
+        "delete": "Delete",
+        "actions": "Actions",
+        "all": "All"
+    },
+    "nav": {
+        "dashboard": "Dashboard",
+        "alerts": "Alerts Center",
+        "cases": "Case Management",
+        "employees": "Employees",
+        "performance": "Performance",
+        "attrition": "Attrition",
+        "training": "Training",
+        "fairness": "Fairness",
+        "recommendations": "Recommendations",
+        "impact": "Impact Analysis",
+        "reports": "Reports",
+        "dataQuality": "Data Quality",
+    "gradientGenerator": "Gradient Generator",
+        "users": "User Management",
+        "settings": "Settings",
+        "help": "Help Center",
+        "systemAdmin": "System Administrator",
+        "executive": "Executive",
+        "hr": "HR",
+        "manager": "Manager",
+        "analyst": "Analyst",
+        "allAlerts": "All Alerts",
+        "unreadAlerts": "Unread",
+        "highSeverityAlerts": "High Severity",
+        "responseLog": "Response Log",
+        "openCases": "Open",
+        "inProgressCases": "In Progress",
+        "underReviewCases": "Under Review",
+        "closedCases": "Closed",
+        "directory": "Directory + Filters",
+        "continuousAnalysis": "Continuous Analysis",
+        "kpis": "KPIs",
+        "earlyUnderperformance": "Early Underperformance",
+        "riskPrediction": "Risk Prediction",
+        "riskDrivers": "Risk Drivers",
+        "attritionCost": "Attrition Cost",
+        "trainingNeedPrediction": "Training Need Prediction",
+        "programMatching": "Program Matching",
+        "trainingImpact": "Training Impact",
+        "fairnessMonitoring": "Fairness Monitoring",
+        "alertsAndReports": "Alerts & Reports",
+        "fairnessExplanations": "Fairness Explanations",
+        "smartRecommendations": "Smart Recommendations",
+        "expectedUplift": "Expected Uplift",
+        "whatIfSimulation": "What-if Simulation",
+        "impactOnPerformance": "Impact on Performance",
+        "impactOnAttrition": "Impact on Attrition Risk",
+        "impactOfTraining": "Training Impact",
+        "periodComparison": "Period Comparison",
+        "reportLibrary": "Report Library",
+        "reportBuilder": "Report Builder",
+        "exports": "Exports",
+        "missingConflictingScan": "Missing/Conflicting Scan",
+        "policies": "Policies",
+        "auditLog": "Audit Log",
+        "criticalAlerts": "Critical Alerts",
+        "usersList": "Users",
+        "roles": "Roles",
+        "dataVisibility": "Data Visibility",
+        "accessAudit": "Audit (Login/Access)",
+        "organizationSettings": "Organization Settings",
+        "thresholdSettings": "Threshold Settings",
+        "modelSettings": "Model Settings",
+        "notificationChannels": "Notification Channels",
+        "exportSettings": "Export Settings",
+        "userGuide": "Role-based User Guide",
+        "faq": "FAQ",
+        "support": "Support / Tickets"
+    },
+    "auth": {
+        "login": "Login",
+        "email": "Email",
+        "password": "Password",
+        "loggingIn": "Logging in...",
+        "failed": "Login failed",
+        "defaultCredentials": "Use admin@smart-hr.com / Admin@123"
+    },
+    "dashboard": {
+        "title": "Smart HR",
+        "welcome": "Welcome back",
+        "totalEmployees": "Total Employees",
+        "highRiskAttrition": "High Risk Attrition",
+        "trainingCompletion": "Training Completion",
+        "averagePerformance": "Average Performance",
+        "performanceTrends": "Performance Trends",
+        "recentActivity": "Recent Activity"
+    },
+    "performance": {
+        "title": "Performance Management",
+        "description": "Monitor KPIs, manage evaluations, and track improvement plans.",
+        "tabs": {
+            "overview": "Overview",
+            "employees": "Employees",
+            "reviews": "Reviews"
+        },
+        "reviewsComingSoon": "Reviews Management Cycle Component - Coming Soon"
+    },
+    "attrition": {
+        "title": "Attrition & Risk Management",
+        "description": "AI-powered turnover prediction and proactive intervention strategies.",
+        "tabs": {
+            "overview": "Overview",
+            "riskAnalysis": "Risk Analysis (XAI)",
+            "interventions": "Intervention Log"
+        },
+        "interventionsComingSoon": "Intervention Tracking Component - Coming Soon"
+    },
+    "training": {
+        "title": "Learning & Development",
+        "description": "Manage skill gaps, approve training requests, and measure ROI.",
+        "tabs": {
+            "skillGaps": "Skill Gaps",
+            "programs": "Programs & Approval",
+            "effectiveness": "Effectiveness & ROI"
+        },
+        "effectivenessComingSoon": "Training Impact Analysis Component - Coming Soon"
+    },
+    "fairness": {
+        "title": "Fairness & Equity Audit",
+        "description": "Monitor bias, analyze disparities, and implement corrective actions.",
+        "tabs": {
+            "overview": "Equity Overview",
+            "demographics": "Demographic Analysis",
+            "recommendations": "AI Recommendations"
+        }
+    },
+    "reports": {
+        "title": "Reports & Analytics",
+        "description": "Generate, schedule, and export system insights.",
+        "tabs": {
+            "templates": "Quick Templates",
+            "builder": "Custom Builder",
+            "downloads": "Download Center"
+        }
+    },
+    "settings": {
+        "title": "System Settings",
+        "description": "Manage your organization preferences and configurations.",
+        "tabs": {
+            "general": "General",
+            "users": "Users",
+            "permissions": "Permissions",
+            "integrations": "Integrations",
+            "security": "Security",
+            "appearance": "Appearance"
+        },
+        "general": {
+            "companyName": "Company Name",
+            "language": "Language",
+            "english": "English (US)",
+            "arabic": "Arabic (SA)"
+        }
+    },
+    "help": {
+        "title": "Help Center",
+        "description": "Find answers, manage tickets, and contact support.",
+        "tabs": {
+            "kb": "Knowledge Base",
+            "tickets": "My Tickets",
+            "contact": "Contact Support"
+        },
+        "contact": {
+            "heading": "Still need help?",
+            "subheading": "Our support team is available Mon-Fri, 9am - 5pm.",
+            "emailSupport": "Email Support",
+            "emailResponseTime": "Response time: ~24 hours",
+            "phoneSupport": "Phone Support",
+            "phoneDirectLine": "Direct line for critical issues"
+        }
+    },
+    "alerts": {
+        "pageTitle": "Alerts Center",
+        "pageDescription": "Manage and track alerts, converting them into actionable cases",
+        "alerts": "alert(s)",
+        "noAlerts": "No alerts match the current filters",
+        "search": "Search by name, department, or alert ID...",
+        "selectAlert": "Select alert",
+        "selectToView": "Select an alert from the list to view details",
+        "quickActions": "Quick actions",
+        "riskScore": "Risk Score",
+        "summary": "Summary",
+        "signalExplanation": "Signal Analysis (XAI)",
+        "suggestedAction": "Suggested Action",
+        "linkedEntities": "Linked Entities",
+        "auditTrail": "Activity Log",
+        "acknowledge": "Acknowledge",
+        "assignOwner": "Assign Owner",
+        "convertToCase": "Convert to Case",
+        "dismiss": "Dismiss",
+        "escalate": "Escalate",
+        "markRead": "Mark as Read",
+        "markAllRead": "Mark All as Read",
+        "bulkAcknowledge": "Bulk Acknowledge",
+        "bulkConvert": "Bulk Convert to Cases",
+        "exportCSV": "Export CSV"
+    }
+}

@@ -1,0 +1,77 @@
+# =============================================
+# Smart HR System — .gitignore
+# =============================================
+
+# ── Environment variables (NEVER commit secrets) ──
+.env
+.env.local
+.env.*.local
+server/.env
+client/.env
+
+# ── Dependencies ──
+node_modules/
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+.pnp/
+.pnp.js
+
+# ── Build outputs ──
+dist/
+build/
+*.egg-info/
+.next/
+
+# ── Docker volumes data ──
+postgres-data/
+ml-models/
+
+# ── IDE ──
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# ── Logs ──
+*.log
+logs/
+*.log.*
+
+# ── OS ──
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ── Test output ──
+playwright-report/
+test-results/
+coverage/
+.nyc_output/
+
+# ── Stale artifacts (one-off scripts, transient outputs) ──
+*.zip
+*.bak
+logs.txt
+logs_full.txt
+hashes.json
+hashes.txt
+full_hashes.txt
+build_errors.txt
+ts_errors.txt
+ts_errors_plain.txt
+typescript-errors.txt
+typescript-errors-utf8.txt
+
+# ── Vite cache ──
+vite.config.ts.timestamp-*
+
+# ── MLflow dev database ──
+mlflow.db
+
+# ── Lock files (pick ONE package manager) ──
+# Uncomment the one you do NOT use:
+# pnpm-lock.yaml
+# package-lock.json

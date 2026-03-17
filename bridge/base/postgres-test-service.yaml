@@ -1,0 +1,23 @@
+# check if there is at least one published port
+
+#! postgres-test-service.yaml
+# Generated code, do not edit
+apiVersion: v1
+kind: Service
+metadata:
+    name: postgres-test-published
+    namespace: smart-performance-system
+    labels:
+        com.docker.compose.project: smart_performance_system
+        com.docker.compose.service: postgres-test
+spec:
+    selector:
+        com.docker.compose.project: smart_performance_system
+        com.docker.compose.service: postgres-test
+    ports:
+        - name: postgres-t-5434
+          port: 5434
+          protocol: TCP
+          targetPort: postgres-t-5432
+
+# check if there is at least one published port

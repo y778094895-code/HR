@@ -1,0 +1,30 @@
+# Shared UI Components Localization (Arabic RTL)
+
+## Goal Description
+The standard shared components (`FiltersBar`, `DataTable`, `ExportButtons`, `SideDrawer`) are already structurally built and working. However, they currently have hardcoded **English text** strings inside them, whereas the UI Specification dictates **Primary Language: Arabic (RTL) with English fallback**. 
+
+This plan will update the internal defaults of these shared components to match the Arabic requirement.
+
+## Proposed Changes
+
+### [MODIFY] `FiltersBar.tsx`
+- Change default search placeholder to `بحث...` (Search...).
+- Change department filter default label to `القسم` (Department).
+- Translate department options: `الهندسة`, `المبيعات`, `المنتج`, إلخ.
+- Change Status filter label to `الحالة` and options to `نشط`, `غير نشط`, `قيد الانتظار`.
+- Change Date range label to `الفترة الزمنية`.
+- Change Reset button text to `إعادة ضبط`.
+
+### [MODIFY] `ExportButtons.tsx`
+- Change "Exporting..." text to `جاري التصدير...`.
+
+### [MODIFY] `DataTable.tsx`
+- Change the generic default `emptyMessage` from "No data available" to `لا توجد بيانات متاحة`.
+- Ensure pagination defaults have the Arabic strings `السابق` and `التالي` as the primary visible elements for RTL.
+
+### [MODIFY] `SideDrawer.tsx`
+- Ensure the drawer respects `side="right"` as the absolute default for RTL layouts to slide in from the correct directional edge according to Arabic UX patterns.
+
+## Verification Plan
+1. Ensure the TypeScript compiler `npm run build` succeeds after these changes.
+2. Confirm the UI components dynamically use the new labels.

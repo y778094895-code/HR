@@ -1,0 +1,16 @@
+#! kustomization.yaml
+# Generated code, do not edit
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+    - 0-smart-performance-system-namespace.yaml
+    - default-network-policy.yaml
+    - postgres-test-deployment.yaml
+    - postgres-test-expose.yaml
+    - postgres-test-service.yaml
+    - rabbitmq-test-deployment.yaml
+    - rabbitmq-test-expose.yaml
+    - rabbitmq-test-service.yaml
+    - redis-test-deployment.yaml
+    - redis-test-expose.yaml
+    - redis-test-service.yaml

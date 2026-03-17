@@ -1,0 +1,39 @@
+# Case-Centric UI/UX Refactor Plan
+
+## Part A: Codebase Analysis
+- [ ] Map existing routes in App.tsx
+- [ ] Map existing navigation in _nav.ts
+- [ ] Analyze existing pages (Performance, Attrition, Fairness, Interventions, Recommendations, etc.)
+- [ ] Identify which modules to reuse, refactor, or create
+- [ ] Establish initial implementation plan for missing centers
+
+## Part B: Navigation & Routing Refactor
+- [ ] Update [_nav.ts](file:///d:/%D9%85%D8%B4%D8%B1%D9%88%D8%B9/14-2-2026/2026-2-13/smart_performance_system/client/src/components/layout/_nav.ts) to match the new 15-item IA grouped structure
+- [ ] Update [App.tsx](file:///d:/%D9%85%D8%B4%D8%B1%D9%88%D8%B9/14-2-2026/2026-2-13/smart_performance_system/client/src/App.tsx) routes to support the new IA while preserving existing aliases
+- [ ] Ensure Arabic RTL labels and RBAC configurations match
+
+## Part C: Implement Core Centers
+- [ ] Create `Alerts Center` (Main page, All, Unread, High Severity, Acknowledged)
+- [ ] Create `Alert Details` Drawer (Summary, Signal, Action, Open Case)
+- [ ] Create `Case Management Center` (Open, In Progress, Review, Closed)
+- [ ] Create `Case Details` Page/Drawer (Summary, Signals, Actions, Monitoring, Impact, Timeline)
+
+## Part D: Refactor Existing Modules
+- [ ] Employees: Add Open Case action from profile/list
+- [ ] Performance: Link underperformance to Case creation
+- [ ] Attrition: Link risk list to Case creation
+- [ ] Training: Link training needs to Cases
+- [ ] Fairness: Link fairness reports to Cases (Admin)
+- [ ] Recommendations/What-If: Allow "Approve scenario" to open Case
+- [ ] Impact Analysis: Ensure it visualizes case/intervention impact
+- [ ] Create Data Quality module (mock scan, UI for missing values)
+- [ ] Update Settings & Users layout alignment
+
+## Part E: Review & Polish
+- [ ] Ensure no dead empty buttons (use state/navigation)
+- [ ] Verify RTL support
+- [ ] Verify Types (`Alert`, `Case`, `Signal`, etc.)
+- [ ] Pass all Acceptance Tests
+
+## Part F: Changelog Generation
+- [ ] Create `docs/client-ui-refactor-changelog.md`

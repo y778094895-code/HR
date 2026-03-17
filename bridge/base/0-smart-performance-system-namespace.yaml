@@ -1,0 +1,8 @@
+#! 0-smart-performance-system-namespace.yaml
+# Generated code, do not edit
+apiVersion: v1
+kind: Namespace
+metadata:
+    name: smart-performance-system
+    labels:
+        com.docker.compose.project: smart_performance_system

@@ -1,0 +1,42 @@
+# Dashboard Fix Pack Implementation Plan
+
+## Goal Description
+Implement a set of 4 core dashboard fixes within existing interfaces:
+1. Universal Reset logic for all Filters.
+2. A functional Search input with RTL icon support and immediate data filtering.
+3. A functional Quick Action dropdown menu in [DashboardHome](file:///d:/%D9%85%D8%B4%D8%B1%D9%88%D8%B9/14-2-2026/2026-2-13/smart_performance_system/client/src/pages/dashboard/DashboardHome.tsx#20-180).
+4. State management and localStorage persistence for Settings checkboxes (e.g., Security limits).
+
+## Proposed Changes
+
+### Part 1: Reset Button Implementation
+- **[MODIFY] [src/components/ui/data-display/FiltersBar.tsx](file:///d:/%D9%85%D8%B4%D8%B1%D9%88%D8%B9/14-2-2026/2026-2-13/smart_performance_system/client/src/components/ui/data-display/FiltersBar.tsx)**
+  - Update [handleReset](file:///d:/%D9%85%D8%B4%D8%B1%D9%88%D8%B9/14-2-2026/2026-2-13/smart_performance_system/client/src/components/ui/data-display/FiltersBar.tsx#122-132) to clear the URL `searchParams` globally using `setSearchParams({})` to reset elements like [TabsContainer](file:///d:/%D9%85%D8%B4%D8%B1%D9%88%D8%B9/14-2-2026/2026-2-13/smart_performance_system/client/src/components/ui/navigation/TabsContainer.tsx#26-87) alongside local filter states.
+- **[MODIFY] Feature List Components** (`TrainingProgramList`, [EmployeePerformanceList](file:///d:/%D9%85%D8%B4%D8%B1%D9%88%D8%B9/14-2-2026/2026-2-13/smart_performance_system/client/src/components/features/performance/EmployeePerformanceList.tsx#27-169), `RiskList`, `DemographicAnalysis`, [InterventionsPage](file:///d:/%D9%85%D8%B4%D8%B1%D9%88%D8%B9/14-2-2026/2026-2-13/smart_performance_system/client/src/pages/dashboard/InterventionsPage.tsx#25-155))
+  - Ensure filters reset triggers a return to default list view states when `onFilterChange` receives the reset payload.
+
+### Part 2: Search Capabilities
+- **[MODIFY] List Components utilizing [FiltersBar](file:///d:/%D9%85%D8%B4%D8%B1%D9%88%D8%B9/14-2-2026/2026-2-13/smart_performance_system/client/src/components/ui/data-display/FiltersBar.tsx#48-193) with `showSearch`**
+  - Dynamically check the `search` key returned by `onFilterChange` and apply case-insensitive array filtering on the data context (e.g. employee names, titles, departments).
+- **[MODIFY] [FiltersBar.tsx](file:///d:/%D9%85%D8%B4%D8%B1%D9%88%D8%B9/14-2-2026/2026-2-13/smart_performance_system/client/src/components/ui/data-display/FiltersBar.tsx) and [KnowledgeBase.tsx](file:///d:/%D9%85%D8%B4%D8%B1%D9%88%D8%B9/14-2-2026/2026-2-13/smart_performance_system/client/src/components/features/help/KnowledgeBase.tsx)**
+  - Append RTL compatibility Tailwind class conditionals (`rtl:right-2 rtl:left-auto pl-8 rtl:pr-8 rtl:pl-3`) so the search magnifying glass overlaps properly in Arabic.
+  - Implement dynamic list filtering inside [KnowledgeBase.tsx](file:///d:/%D9%85%D8%B4%D8%B1%D9%88%D8%B9/14-2-2026/2026-2-13/smart_performance_system/client/src/components/features/help/KnowledgeBase.tsx).
+
+### Part 3: Quick Action Menu
+- **[MODIFY] [src/pages/dashboard/DashboardHome.tsx](file:///d:/%D9%85%D8%B4%D8%B1%D9%88%D8%B9/14-2-2026/2026-2-13/smart_performance_system/client/src/pages/dashboard/DashboardHome.tsx)**
+  - Replace the static "Quick Action" `<Button>` with the globally available `<DropdownMenu>`.
+  - Provide navigational `onClick` handlers leading to: Performance, Attrition, Training, Reports, Interventions, Employees, Settings, Help.
+  - For Admins ([hasRole('admin')](file:///d:/%D9%85%D8%B4%D8%B1%D9%88%D8%B9/14-2-2026/2026-2-13/smart_performance_system/client/src/contexts/AuthContext.tsx#110-116)), insert Fairness and Users Management elements.
+
+### Part 4: Interactive Checklists
+- **[MODIFY] [src/components/features/settings/SettingsTabs.tsx](file:///d:/%D9%85%D8%B4%D8%B1%D9%88%D8%B9/14-2-2026/2026-2-13/smart_performance_system/client/src/components/features/settings/SettingsTabs.tsx)**
+  - Build a typed local state variable mapping Security Checklists (Password Policy rules).
+  - Seed state from `localStorage.getItem('settings_security_policy_v1')`.
+  - Attach a "Save Security Changes" `<Button>` that merges the state via `setItem` and fires a green `toast()` indicating successful persistence.
+
+## Verification Plan
+1. **AT-Reset-01:** Assert the Reset button dynamically flushes UI states and URL fragments without side effects.
+2. **AT-Search-01:** Validate continuous case-insensitive text filters prune listed components properly. Ensure the Search icon doesn't leak under text in RTL.
+3. **AT-QA-03:** Click Quick Action; verify the dropdown renders, links function correctly, and RBAC visibility is enforced.
+4. **AT-Checkbox-01:** Tick checkboxes in Security, Save, reload the browser, and ensure values persisted stably.
+

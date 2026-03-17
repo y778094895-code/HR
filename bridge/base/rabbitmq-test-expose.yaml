@@ -1,0 +1,39 @@
+#! rabbitmq-test-expose.yaml
+# Generated code, do not edit
+apiVersion: v1
+kind: Service
+metadata:
+    name: rabbitmq-test
+    namespace: smart-performance-system
+    labels:
+        com.docker.compose.project: smart_performance_system
+        com.docker.compose.service: rabbitmq-test
+spec:
+    selector:
+        com.docker.compose.project: smart_performance_system
+        com.docker.compose.service: rabbitmq-test
+    ports:
+        - name: rabbitmq--25672
+          port: 25672
+          targetPort: rabbitmq--25672
+        - name: rabbitmq--15672
+          port: 15672
+          targetPort: rabbitmq--15672
+        - name: rabbitmq--15692
+          port: 15692
+          targetPort: rabbitmq--15692
+        - name: rabbitmq-t-4369
+          port: 4369
+          targetPort: rabbitmq-t-4369
+        - name: rabbitmq-t-5671
+          port: 5671
+          targetPort: rabbitmq-t-5671
+        - name: rabbitmq-t-5672
+          port: 5672
+          targetPort: rabbitmq-t-5672
+        - name: rabbitmq--15671
+          port: 15671
+          targetPort: rabbitmq--15671
+        - name: rabbitmq--15691
+          port: 15691
+          targetPort: rabbitmq--15691

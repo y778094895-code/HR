@@ -1,0 +1,74 @@
+# Walkthrough: Implementing App Routes, RBAC, & Full App i18n
+
+## Implementing Full Application i18n
+The goal of this task was to implement bidirectional (RTL Arabic to LTR English) language switching across the entire application interface, persisting user preference without reloading.
+
+### 1. **Core Translation Engine (`react-i18next`)**
+   - Initialized global `i18n` parsing engine.
+   - Bootstrapped `en.json` and `ar.json` dictionaries storing granular keys mapping namespaced UI labels (`common`, `dashboard`, `auth`, etc.).
+   - Linked to application root tree to block rendering until the active locale is fully resolved.
+
+### 2. **Dynamic Language Switcher (`SettingsTabs.tsx`)**
+   - Engineered an interactive Select component inside the `GeneralSettings` tab pointing to `pendingLanguage`.
+   - Tied changes exclusively to a "Save Changes" trigger. Once saved:
+     - Mutates `document.documentElement` attributes (`dir` and `lang`) forcing native browser layout realignment seamlessly.
+     - Saves the preferred locale key `app_lang` into `localStorage` ensuring it sticks across hard refreshes.
+     - Emits a localized `useToast` confirming the success contextually.
+
+### 3. **Component Injection (`useTranslation()`)**
+   - Converted over a dozen heavily-nested UI layouts scaling from granular atomic atoms to composed page scopes to consume dynamic hooks.
+   - Refactored Navigation Maps (`_nav.ts`) from holding literal text properties to pointing at `labelKey` identifiers for i18n.
+   - Implemented dynamic translation on KPI widgets, DataTables, Filter Bars, and Page Header descriptions across 9 Core Views.
+The goal of this task was to update the application routing to enforce Role-Based Access Control (RBAC) securely on the client-side, making sure that employees, managers, and admins only see the paths and sidebar items they are authorized for.
+
+## Changes Made
+1. **Added Route Protectors (`App.tsx`)**
+   We wrapped several legacy routes with `ProtectedRoute` matching the UI specification:
+   - `/dashboard/interventions` is now restricted to `admin` and `manager`.
+   - `/dashboard/vo-employees` is now restricted to `admin` and `manager`.
+   - `/dashboard/impact` is now restricted to `admin` and `manager`.
+   - Other routes (`performance`, `attrition`, `training`, `fairness`, `reports`, `users`) are correctly protected as defined in the Navigation Map spec.
+
+2. **Sidebar Navigation Filtering (`_nav.ts`)**
+   - Added `rolesAllowed` arrays to the original navigation items.
+   - Added all new routes required by the UI specification (e.g., `performance`, `attrition`, `training`, `fairness`, `reports`, `settings`, `help`) with Arabic labels (`label_ar`), appropriate Lucide icons, and role restrictions.
+   - The sidebar component uses `filterNavByRole` to dynamically hide routes a user does not have permission for.
+
+3. **Compiler Issue Fixes**
+   - Fixed pre-existing TypeScript errors in `useFairnessAnalysis.ts`, `useInterventions.ts`, `useTurnoverRisk.ts`, and `turnover.store.ts` that were preventing the project from building successfully.
+
+## Shared UI Components Localization (RTL / Arabic)
+1. **FiltersBar** (`FiltersBar.tsx`)
+   - Default labels and placeholders are now Arabic ("بحث..." for Search, "القسم" for Department, "الحالة" for Status, "الفترة الزمنية" for Period, and "إعادة ضبط" for Reset).
+   - Filter dropdown options (Engineering, Sales, Active, etc.) are translated into their appropriate Arabic equivalents.
+2. **DataTable** (`DataTable.tsx`)
+   - The default `emptyMessage` state now renders "لا توجد بيانات متاحة" instead of "No data available".
+   - The internal structure already correctly relies on Tailwind `rtl:` classes to adapt Next/Previous arrows dynamically.
+3. **ExportButtons** (`ExportButtons.tsx`)
+   - The loading button states for PDF and Excel exports show "جاري التصدير..." instead of "Exporting...".
+4. **SideDrawer** (`SideDrawer.tsx`)
+   - Re-verified implementation: the default origin `side="right"` is optimal for Arabic UX, sliding in seamlessly.
+
+## Core Dashboard Pages Localization (Arabic RTL)
+Translated the main outer layouts, headers/descriptions, and tabs into Arabic for the 7 main core pages to align with the UI Specification:
+1. **PerformancePage** -> الأداء
+2. **AttritionPage** -> الاستقالات وإدارة المخاطر
+3. **TrainingPage** -> التدريب والتطوير
+4. **FairnessPage** -> تدقيق العدالة والمساواة
+5. **ReportsPage** -> التقارير والتحليلات
+6. **SettingsPage & SettingsTabs** -> إعدادات النظام
+7. **HelpPage** -> مركز المساعدة
+
+## Hard Logout Reset & Navigation Mapping
+1. **Logout Reset (`AuthContext.tsx` & `DashboardLayout.tsx`)**
+   - Introduced a `clearAuthStorage` utility to forcefully clear `auth_token`, `auth_user`, and `auth_v1` from `localStorage`.
+   - Updated the `DashboardLayout` logout handler to aggressively clear storage and use `navigate('/login', { replace: true })` to prevent browser-back rehydration.
+   - Fallback `useEffect` authentication parse errors now securely hook into this reset.
+2. **Complete Navigation Links (`_nav.ts`)**
+   - Added missing sidebar routes mapping: Performance, Attrition, Training, Fairness, Reports, Settings, and Help.
+   - Assigned appropriate Role-Based Access Controls (RBAC) to ensure they match `App.tsx` protections (e.g. Fairness visible only to `admin`).
+   - Placed the entire menu in the specific ordered logical sequence requested, utilizing standardized Arabic names (e.g., لوحة التحكم, التدريب).
+
+## Verification
+- Code has been fully typed and successfully passes `npm run build` with Vite/TSC.
+- Navigation definitions and Page structures align *exactly* with the provided UI specifications.

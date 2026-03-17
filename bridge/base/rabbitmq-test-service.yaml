@@ -1,0 +1,25 @@
+#! rabbitmq-test-service.yaml
+# Generated code, do not edit
+apiVersion: v1
+kind: Service
+metadata:
+    name: rabbitmq-test-published
+    namespace: smart-performance-system
+    labels:
+        com.docker.compose.project: smart_performance_system
+        com.docker.compose.service: rabbitmq-test
+spec:
+    selector:
+        com.docker.compose.project: smart_performance_system
+        com.docker.compose.service: rabbitmq-test
+    ports:
+        - name: rabbitmq-t-5673
+          port: 5673
+          protocol: TCP
+          targetPort: rabbitmq-t-5672
+        - name: rabbitmq--15673
+          port: 15673
+          protocol: TCP
+          targetPort: rabbitmq--15672
+
+# check if there is at least one published port

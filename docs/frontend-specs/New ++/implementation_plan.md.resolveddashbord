@@ -1,0 +1,238 @@
+# Dashboard Rebuild: Case-Centric Intelligence Hub
+
+Rebuild the `/dashboard` index page ([DashboardHome.tsx](file:///d:/%D9%85%D8%B4%D8%B1%D9%88%D8%B9/14-2-2026/2026-2-13/smart_performance_system/client/src/pages/dashboard/DashboardHome.tsx)) from a simple KPI + tab layout into a full Case-Centric Intelligence Hub with 6 sections, RBAC-scoped rendering, a sticky filter bar, a risk drawer, a Create Case modal, and an Action Feed — all without changing backend endpoints.
+
+## Project Analysis Summary
+
+| Area | Findings |
+|------|----------|
+| **Routing** | [App.tsx](file:///d:/%D9%85%D8%B4%D8%B1%D9%88%D8%B9/14-2-2026/2026-2-13/smart_performance_system/client/src/App.tsx) → `/dashboard` index = [DashboardHome.tsx](file:///d:/%D9%85%D8%B4%D8%B1%D9%88%D8%B9/14-2-2026/2026-2-13/smart_performance_system/client/src/pages/dashboard/DashboardHome.tsx), wrapped in [ProtectedRoute](file:///d:/%D9%85%D8%B4%D8%B1%D9%88%D8%B9/14-2-2026/2026-2-13/smart_performance_system/client/src/components/shared/ProtectedRoute.tsx#10-36) + [DashboardLayout](file:///d:/%D9%85%D8%B4%D8%B1%D9%88%D8%B9/14-2-2026/2026-2-13/smart_performance_system/client/src/components/layout/DashboardLayout.tsx#16-238) |
+| **Layout Shell** | [DashboardLayout.tsx](file:///d:/%D9%85%D8%B4%D8%B1%D9%88%D8%B9/14-2-2026/2026-2-13/smart_performance_system/client/src/components/layout/DashboardLayout.tsx) (sidebar + topbar + `<Outlet />`), [_nav.ts](file:///d:/%D9%85%D8%B4%D8%B1%D9%88%D8%B9/14-2-2026/2026-2-13/smart_performance_system/client/src/components/layout/_nav.ts) for navigation items |
+| **Widgets** | [KPICard.tsx](file:///d:/%D9%85%D8%B4%D8%B1%D9%88%D8%B9/14-2-2026/2026-2-13/smart_performance_system/client/src/components/ui/data-display/KPICard.tsx) (with loading skeleton), [FiltersBar.tsx](file:///d:/%D9%85%D8%B4%D8%B1%D9%88%D8%B9/14-2-2026/2026-2-13/smart_performance_system/client/src/components/ui/data-display/FiltersBar.tsx) (with debounce + URL params), `EmptyState.tsx` |
+| **State** | Zustand stores: [dashboard.store.ts](file:///d:/%D9%85%D8%B4%D8%B1%D9%88%D8%B9/14-2-2026/2026-2-13/smart_performance_system/client/src/stores/business/dashboard.store.ts), [case.store.ts](file:///d:/%D9%85%D8%B4%D8%B1%D9%88%D8%B9/14-2-2026/2026-2-13/smart_performance_system/client/src/stores/business/case.store.ts) (persisted), [alert.store.ts](file:///d:/%D9%85%D8%B4%D8%B1%D9%88%D8%B9/14-2-2026/2026-2-13/smart_performance_system/client/src/stores/business/alert.store.ts) (persisted), [auth.store.ts](file:///d:/%D9%85%D8%B4%D8%B1%D9%88%D8%B9/14-2-2026/2026-2-13/smart_performance_system/client/src/stores/business/auth.store.ts) |
+| **RBAC** | Roles in code: `admin`, `manager`, `employee`, `super_admin`. [ProtectedRoute](file:///d:/%D9%85%D8%B4%D8%B1%D9%88%D8%B9/14-2-2026/2026-2-13/smart_performance_system/client/src/components/shared/ProtectedRoute.tsx#10-36) with `allowedRoles` prop. [useAuth()](file:///d:/%D9%85%D8%B4%D8%B1%D9%88%D8%B9/14-2-2026/2026-2-13/smart_performance_system/client/src/contexts/AuthContext.tsx#145-152) gives [hasRole](file:///d:/%D9%85%D8%B4%D8%B1%D9%88%D8%B9/14-2-2026/2026-2-13/smart_performance_system/client/src/contexts/AuthContext.tsx#110-116), `role` |
+| **API** | [dashboard.service.ts](file:///d:/%D9%85%D8%B4%D8%B1%D9%88%D8%B9/14-2-2026/2026-2-13/smart_performance_system/client/src/services/resources/dashboard.service.ts) → `GET /dashboard` with 5-min cache. Axios client with auth interceptors |
+| **i18n** | `react-i18next`, [ar.json](file:///d:/%D9%85%D8%B4%D8%B1%D9%88%D8%B9/14-2-2026/2026-2-13/smart_performance_system/client/src/locales/ar.json) + [en.json](file:///d:/%D9%85%D8%B4%D8%B1%D9%88%D8%B9/14-2-2026/2026-2-13/smart_performance_system/client/src/locales/en.json), Arabic RTL default |
+| **Theme** | [AppearanceContext](file:///d:/%D9%85%D8%B4%D8%B1%D9%88%D8%B9/14-2-2026/2026-2-13/smart_performance_system/client/src/contexts/AppearanceContext.tsx#11-15) with 4 themes (light/dark/midnight/sand) + 5 accents, CSS variables |
+
+### Role Mapping (Spec → Code)
+
+| Spec Role | Mapped Code Role | Scope |
+|-----------|-----------------|-------|
+| Executive | `admin` (when `view=executive`) | Aggregate only |
+| HR | `admin` | Full org access |
+| Department Manager | `manager` | Own department only |
+| Team Supervisor | `manager` (team scope) | Own team only |
+| Data Analyst | `admin` (when `view=analyst`) | Full data + export |
+| System Admin | `super_admin` | No analytics sections |
+
+> [!IMPORTANT]
+> The existing codebase has 4 roles (`admin`, `manager`, `employee`, `super_admin`). I'll implement scope enforcement using [useAuth().role](file:///d:/%D9%85%D8%B4%D8%B1%D9%88%D8%B9/14-2-2026/2026-2-13/smart_performance_system/client/src/contexts/AuthContext.tsx#145-152) and the `user.department` field. The `super_admin` role will be blocked from analytics sections as specified.
+
+---
+
+## Proposed Changes
+
+### Component 1: TypeScript Models & Types
+
+#### [NEW] [dashboard.types.ts](file:///d:/مشروع/14-2-2026/2026-2-13/smart_performance_system/client/src/types/dashboard.types.ts)
+
+New file with all dashboard-specific types:
+
+- `DashboardResponse` (kpis, risk, performance, fairness, cases, alerts)
+- `DashboardKPI` (metric value, change %, sparkline data, deep link)
+- `RiskEmployee` (name, risk %, driver, department)
+- `XAIDriver` (factor name, weight, explanation)
+- `PerformanceTrend` (month, score, department)
+- `FairnessIndicator` (salary gap, bias score, promotion equity, alert flag)
+- `ActionFeedItem` (type, message, timestamp, actions, dismissed)
+- `DashboardFilters` (timePeriod, department, location, contractType, jobGrade)
+- [Severity](file:///d:/%D9%85%D8%B4%D8%B1%D9%88%D8%B9/14-2-2026/2026-2-13/smart_performance_system/client/src/stores/business/alert.store.ts#4-5) enum: `'low' | 'medium' | 'high' | 'critical'`
+
+---
+
+### Component 2: Dashboard Data Adapter
+
+#### [NEW] [dashboardDataAdapter.ts](file:///d:/مشروع/14-2-2026/2026-2-13/smart_performance_system/client/src/services/adapters/dashboardDataAdapter.ts)
+
+A mock adapter that provides realistic data shaped as `DashboardResponse`. This adapter:
+- Returns typed mock data for all 6 dashboard sections
+- Accepts `DashboardFilters` and simulates filtering
+- Can be later wired to real endpoints trivially
+- Respects the existing [DashboardService](file:///d:/%D9%85%D8%B4%D8%B1%D9%88%D8%B9/14-2-2026/2026-2-13/smart_performance_system/client/src/services/resources/dashboard.service.ts#7-43) cache strategy
+
+---
+
+### Component 3: RBAC Utility
+
+#### [NEW] [useDashboardScope.ts](file:///d:/مشروع/14-2-2026/2026-2-13/smart_performance_system/client/src/hooks/useDashboardScope.ts)
+
+A hook that reads [useAuth().role](file:///d:/%D9%85%D8%B4%D8%B1%D9%88%D8%B9/14-2-2026/2026-2-13/smart_performance_system/client/src/contexts/AuthContext.tsx#145-152) and returns:
+- `visibleSections`: which of the 6 sections this role can see
+- `dataScope`: 'org' | 'department' | 'team'
+- `canExport`: boolean
+- `canSeeAnalytics`: boolean (false for `super_admin`)
+
+---
+
+### Component 4: Dashboard Sections (6 new components)
+
+#### [NEW] [KPIStrip.tsx](file:///d:/مشروع/14-2-2026/2026-2-13/smart_performance_system/client/src/components/features/dashboard/KPIStrip.tsx)
+
+5 KPI cards in a responsive grid. Each card uses the existing [KPICard](file:///d:/%D9%85%D8%B4%D8%B1%D9%88%D8%B9/14-2-2026/2026-2-13/smart_performance_system/client/src/components/ui/data-display/KPICard.tsx#29-108) as a base but enhanced with:
+- Mini sparkline (simple SVG polyline, no chart library needed)
+- Click handler for deep-link navigation
+- Tooltip on hover explaining the KPI
+
+#### [NEW] [RiskIntelligencePanel.tsx](file:///d:/مشروع/14-2-2026/2026-2-13/smart_performance_system/client/src/components/features/dashboard/RiskIntelligencePanel.tsx)
+
+Two-column layout (8+4 grid):
+- **Left**: Heatmap placeholder (CSS grid with color-coded cells), distribution bars (High/Med/Low), 6-month trend line (SVG)
+- **Right**: Top 10 High-Risk Employees table with "Open Drawer" action
+
+#### [NEW] [RiskDrawer.tsx](file:///d:/مشروع/14-2-2026/2026-2-13/smart_performance_system/client/src/components/features/dashboard/RiskDrawer.tsx)
+
+Slide-in drawer using existing `Sheet` component:
+- Risk Score display
+- Contributing Factors (XAI) as bar chart
+- Suggested Intervention text
+- "Open Case" button → calls `useCaseStore.addCase()` and navigates to `/dashboard/cases`
+- Timeline snapshot
+
+#### [NEW] [PerformanceIntelligencePanel.tsx](file:///d:/مشروع/14-2-2026/2026-2-13/smart_performance_system/client/src/components/features/dashboard/PerformanceIntelligencePanel.tsx)
+
+- 6-month trend line chart (SVG)
+- Department comparison bars
+- Early decline detection badge (amber warning badge)
+- Quick drilldown button → `/dashboard/performance`
+
+#### [NEW] [FairnessMonitoringPanel.tsx](file:///d:/مشروع/14-2-2026/2026-2-13/smart_performance_system/client/src/components/features/dashboard/FairnessMonitoringPanel.tsx)
+
+4 indicator cards:
+- Salary gap, Evaluation bias score, Promotion equity ratio, Alert if breached
+- RBAC: hidden for `employee` and `super_admin` roles
+
+#### [NEW] [ActiveCasesTable.tsx](file:///d:/مشروع/14-2-2026/2026-2-13/smart_performance_system/client/src/components/features/dashboard/ActiveCasesTable.tsx)
+
+Compact table reading from `useCaseStore`:
+- Columns: Case ID, Type, Owner, Severity (color-coded), Status, Due Date
+- Row click → deep link to `/dashboard/cases`
+- Lazy loaded
+
+#### [NEW] [ActionFeed.tsx](file:///d:/مشروع/14-2-2026/2026-2-13/smart_performance_system/client/src/components/features/dashboard/ActionFeed.tsx)
+
+Chronological feed with icons per type:
+- 🔔 Alert, ⚠️ Threshold, 💡 Recommendation, 📉 Performance Drop
+- Actions: View, Open Case, Dismiss
+- Dismiss persists to localStorage (key: `dashboard_dismissed_feed`)
+- Lazy loaded
+
+---
+
+### Component 5: Create Case Modal
+
+#### [NEW] [CreateCaseModal.tsx](file:///d:/مشروع/14-2-2026/2026-2-13/smart_performance_system/client/src/components/features/dashboard/CreateCaseModal.tsx)
+
+Dialog using existing `Dialog` component (from `ui/overlays`):
+- Fields: Title, Description, Priority, Employee (optional)
+- On submit: calls `useCaseStore.addCase()` → closes modal → navigates to case details
+
+---
+
+### Component 6: Context Smart Filters
+
+#### [NEW] [DashboardSmartFilters.tsx](file:///d:/مشروع/14-2-2026/2026-2-13/smart_performance_system/client/src/components/features/dashboard/DashboardSmartFilters.tsx)
+
+Sticky horizontal filter bar under topbar, extends existing [FiltersBar](file:///d:/%D9%85%D8%B4%D8%B1%D9%88%D8%B9/14-2-2026/2026-2-13/smart_performance_system/client/src/components/ui/data-display/FiltersBar.tsx#49-196) patterns:
+- Filters: Time Period, Department, Location, Contract Type, Job Grade
+- Reset & Save View buttons
+- Debounced, triggers unified refresh callback
+- URL params sync
+
+---
+
+### Component 7: Main Dashboard Page (Rewrite)
+
+#### [MODIFY] [DashboardHome.tsx](file:///d:/مشروع/14-2-2026/2026-2-13/smart_performance_system/client/src/pages/dashboard/DashboardHome.tsx)
+
+Full rewrite to compose all sections:
+1. `DashboardSmartFilters` (sticky)
+2. `KPIStrip` (loads first, progressive)
+3. `RiskIntelligencePanel` (with drawer)
+4. `PerformanceIntelligencePanel`
+5. `FairnessMonitoringPanel` (RBAC)
+6. `ActiveCasesTable` (lazy loaded via `React.lazy` + `Suspense`)
+7. `ActionFeed` (lazy loaded)
+8. `CreateCaseModal` (triggered from topbar button)
+
+Each section independently manages Loading/Error/Empty/Normal states.
+
+---
+
+### Component 8: Topbar Enhancement
+
+#### [MODIFY] [DashboardLayout.tsx](file:///d:/مشروع/14-2-2026/2026-2-13/smart_performance_system/client/src/components/layout/DashboardLayout.tsx)
+
+Add to existing topbar:
+- Global search input (client-side filter across employee/case/department)
+- "Quick Create Case" button (opens `CreateCaseModal` via callback)
+- Notifications icon with badge (reads `useAlertStore.getUnreadCount()`)
+- User profile dropdown (using existing profile chip + sheet/dropdown)
+- Language toggle (uses existing `i18n.changeLanguage`)
+
+---
+
+### Component 9: Dashboard CSS
+
+#### [NEW] [dashboard.css](file:///d:/مشروع/14-2-2026/2026-2-13/smart_performance_system/client/src/styles/dashboard.css)
+
+Dashboard-specific custom properties and utilities:
+- Risk colors (red-600, amber-500, green-600)
+- Card radius 16px override
+- Shadow level 2
+- Sparkline styling
+- Heatmap cell colors
+- Feed item styling
+
+---
+
+### Component 10: Documentation
+
+#### [NEW] [dashboard-redesign-changelog.md](file:///d:/مشروع/14-2-2026/2026-2-13/smart_performance_system/client/docs/dashboard-redesign-changelog.md)
+
+Changelog listing all added/modified/removed files with reasons.
+
+---
+
+## Verification Plan
+
+### Browser Verification (Manual)
+
+The project has no automated test suite (only a bare [setupTests.ts](file:///d:/%D9%85%D8%B4%D8%B1%D9%88%D8%B9/14-2-2026/2026-2-13/smart_performance_system/client/src/setupTests.ts)). Verification will be done manually via the browser.
+
+**Steps to verify:**
+
+1. **Start the dev server**: Run `npm run dev` from `client/` directory
+2. **Navigate to** `http://localhost:5173/login`, log in (or it may redirect to dashboard if already authenticated)
+3. **AT-Dash-01**: Verify all 6 sections render on the dashboard page with correct responsive layout
+4. **AT-Filters-01**: Verify the sticky filter bar is visible, filters trigger per-widget skeleton loading (not full page), and Reset clears all filters
+5. **AT-Risk-01**: Click a row in the Top 10 table → verify the Risk Drawer slides in with risk score, XAI factors, suggested intervention, Open Case button, and timeline
+6. **AT-Case-01**: Click "Open Case" in the Risk Drawer → verify a case is created in `useCaseStore` (check browser DevTools → Application → localStorage key `smart-hr-cases-storage`) and navigation to `/dashboard/cases` occurs
+7. **AT-RBAC-01**: If user is `super_admin`, verify analytics sections (KPIs, Risk, Performance, Fairness) are hidden. Other roles should see sections scoped to their access level
+8. **AT-Perf-01**: Scroll down and observe that Active Cases and Action Feed sections lazy-load (appear after KPI strip renders)
+9. **AT-A11y-01**: Tab through all interactive elements → verify focus rings are visible, `aria-label` attributes exist on icon buttons
+10. **AT-Docs-01**: Verify file `client/docs/dashboard-redesign-changelog.md` exists and lists all changes
+
+### Build Verification (Automated)
+
+Run `npx tsc --noEmit` from `client/` to verify no TypeScript compilation errors.
+
+### Additional Manual Checks
+
+- **Create Case Modal**: Click "Quick Create Case" in topbar → verify the modal opens with form fields, submit creates a case
+- **Action Feed Dismiss**: Click "Dismiss" on a feed item → refresh the page → verify dismissed item does not reappear
+- **RTL/LTR**: Toggle language → verify layout mirrors correctly
+- **Theme**: Switch themes → verify dashboard colors adapt
+
+> [!NOTE]
+> I will run the dev server and do visual/browser verification after implementation. If you'd like specific automated tests written, let me know and I can add them to the plan.

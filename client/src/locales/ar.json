@@ -1,0 +1,228 @@
+{
+    "common": {
+        "loading": "جاري التحميل...",
+        "saveChanges": "حفظ التغييرات",
+        "logout": "تسجيل الخروج",
+        "search": "بحث...",
+        "searchPlaceholder": "بحث...",
+        "reset": "إعادة ضبط",
+        "exporting": "جاري التصدير...",
+        "pdf": "PDF",
+        "excel": "Excel",
+        "noData": "لا توجد بيانات متاحة",
+        "comingSoon": "قريباً",
+        "department": "القسم",
+        "status": "الحالة",
+        "period": "الفترة الزمنية",
+        "select": "اختر",
+        "active": "نشط",
+        "inactive": "غير نشط",
+        "pending": "قيد الانتظار",
+        "engineering": "الهندسة",
+        "sales": "المبيعات",
+        "marketing": "التسويق",
+        "hr": "الموارد البشرية",
+        "product": "المنتج",
+        "view": "عرض",
+        "edit": "تعديل",
+        "delete": "حذف",
+        "actions": "إجراءات",
+        "all": "الكل"
+    },
+    "nav": {
+        "dashboard": "لوحة التحكم",
+        "alerts": "مركز التنبيهات",
+        "cases": "الحالات والتدخلات",
+        "employees": "الموظفين",
+        "performance": "الأداء",
+        "attrition": "الاستقالات",
+        "training": "التدريب",
+        "fairness": "العدالة",
+        "recommendations": "التوصيات والمحاكاة",
+        "impact": "تحليل الأثر",
+        "reports": "التقارير",
+        "dataQuality": "جودة البيانات",
+        "users": "إدارة المستخدمين",
+        "settings": "الإعدادات",
+        "help": "المساعدة",
+        "systemAdmin": "مدير النظام",
+        "executive": "تنفيذي",
+        "hr": "الموارد البشرية",
+        "manager": "المدير المباشر",
+        "analyst": "محلل",
+        "allAlerts": "كل التنبيهات",
+        "unreadAlerts": "غير مقروءة",
+        "highSeverityAlerts": "عالية الخطورة",
+        "responseLog": "سجل الاستجابة",
+        "openCases": "حالات مفتوحة",
+        "inProgressCases": "قيد التنفيذ",
+        "underReviewCases": "تحت المراجعة",
+        "closedCases": "مغلقة",
+        "directory": "دليل الموظفين",
+        "continuousAnalysis": "التحليل المستمر",
+        "kpis": "مؤشرات الأداء",
+        "earlyUnderperformance": "الأداء المتدني المبكر",
+        "riskPrediction": "تنبؤ المخاطر",
+        "riskDrivers": "دوافع المخاطر",
+        "attritionCost": "تكلفة الاستقالات",
+        "trainingNeedPrediction": "تنبؤ الاحتياجات التدريبية",
+        "programMatching": "مطابقة البرامج",
+        "trainingImpact": "أثر التدريب",
+        "fairnessMonitoring": "مراقبة العدالة",
+        "alertsAndReports": "التنبيهات والتقارير",
+        "fairnessExplanations": "تفسيرات العدالة",
+        "smartRecommendations": "التوصيات الذكية",
+        "expectedUplift": "التحسن المتوقع",
+        "whatIfSimulation": "محاكاة ماذا لو",
+        "impactOnPerformance": "الأثر على الأداء",
+        "impactOnAttrition": "الأثر على التسرب",
+        "impactOfTraining": "أثر التدريب",
+        "periodComparison": "مقارنة الفترات",
+        "reportLibrary": "مكتبة التقارير",
+        "reportBuilder": "منشئ التقارير",
+        "exports": "التصدير",
+        "missingConflictingScan": "فحص المتضاربة/المفقودة",
+        "policies": "السياسات",
+        "auditLog": "سجل التدقيق",
+        "criticalAlerts": "تنبيهات حرجة",
+        "usersList": "المستخدمون",
+        "roles": "الأدوار",
+        "dataVisibility": "صلاحيات البيانات",
+        "accessAudit": "تدقيق الوصول",
+        "organizationSettings": "إعدادات المنظمة",
+        "thresholdSettings": "إعدادات العتبات",
+        "modelSettings": "إعدادات النماذج",
+        "notificationChannels": "قنوات الإشعارات",
+        "exportSettings": "إعدادات التصدير",
+        "userGuide": "دليل المستخدم",
+        "faq": "الأسئلة الشائعة",
+        "support": "تذاكر الدعم"
+    },
+    "auth": {
+        "login": "تسجيل الدخول",
+        "email": "البريد الإلكتروني",
+        "password": "كلمة المرور",
+        "loggingIn": "جاري تسجيل الدخول...",
+        "failed": "فشل تسجيل الدخول",
+        "defaultCredentials": "استخدم admin@smart-hr.com / Admin@123"
+    },
+    "dashboard": {
+        "title": "النظام الذكي",
+        "welcome": "مرحباً بعودتك",
+        "totalEmployees": "إجمالي الموظفين",
+        "highRiskAttrition": "الاستقالات عالية الخطورة",
+        "trainingCompletion": "إكمال التدريب",
+        "averagePerformance": "متوسط الأداء",
+        "performanceTrends": "اتجاهات الأداء",
+        "recentActivity": "النشاط الأخير"
+    },
+    "performance": {
+        "title": "الأداء",
+        "description": "تتبع مؤشرات الأداء، إدارة التقييمات، وخطط التحسين.",
+        "tabs": {
+            "overview": "النظرة العامة",
+            "employees": "الموظفون",
+            "reviews": "التقييمات"
+        },
+        "reviewsComingSoon": "إدارة التقييمات - قريباً"
+    },
+    "attrition": {
+        "title": "الاستقالات وإدارة المخاطر",
+        "description": "تنبؤات المدخلات وتحديد مخاطر التسرب الوظيفي.",
+        "tabs": {
+            "overview": "النظرة العامة",
+            "riskAnalysis": "تحليل المخاطر",
+            "interventions": "سجل التدخلات"
+        },
+        "interventionsComingSoon": "سجل تتبع التدخلات - قريباً"
+    },
+    "training": {
+        "title": "التدريب والتطوير",
+        "description": "إدارة فجوات المهارات، طلبات التدريب، والعائد على الاستثمار.",
+        "tabs": {
+            "skillGaps": "فجوات المهارات",
+            "programs": "البرامج والاعتمادات",
+            "effectiveness": "الفعالية والعائد"
+        },
+        "effectivenessComingSoon": "تحليل التأثير - قريباً"
+    },
+    "fairness": {
+        "title": "تدقيق العدالة والمساواة",
+        "description": "مراقبة التحيز، تحليل الفجوات، وتطبيق الإجراءات التصحيحية.",
+        "tabs": {
+            "overview": "نظرة عامة على المساواة",
+            "demographics": "التحليل الديموغرافي",
+            "recommendations": "توصيات الذكاء الاصطناعي"
+        }
+    },
+    "reports": {
+        "title": "التقارير والتحليلات",
+        "description": "إنشاء، جدولة، وتصدير الرؤى والبيانات.",
+        "tabs": {
+            "templates": "القوالب السريعة",
+            "builder": "المُنشئ المخصص",
+            "downloads": "مركز التنزيل"
+        }
+    },
+    "settings": {
+        "title": "إعدادات النظام",
+        "description": "إدارة تفضيلات المؤسسة والتكوينات.",
+        "tabs": {
+            "general": "عام",
+            "users": "المستخدمون",
+            "permissions": "الصلاحيات",
+            "integrations": "التكاملات",
+            "security": "الأمان",
+            "appearance": "المظهر"
+        },
+        "general": {
+            "companyName": "اسم الشركة",
+            "language": "اللغة",
+            "english": "English (US)",
+            "arabic": "العربية (SA)"
+        }
+    },
+    "help": {
+        "title": "مركز المساعدة",
+        "description": "البحث عن إجابات، إدارة التذاكر، والتواصل مع الدعم.",
+        "tabs": {
+            "kb": "قاعدة المعرفة",
+            "tickets": "تذاكر الدعم",
+            "contact": "اتصل بالدعم"
+        },
+        "contact": {
+            "heading": "هل ما زلت بحاجة للمساعدة؟",
+            "subheading": "فريق الدعم متاح من الاثنين إلى الجمعة، 9 صباحاً - 5 مساءً.",
+            "emailSupport": "الدعم عبر البريد الإلكتروني",
+            "emailResponseTime": "وقت الاستجابة: ~24 ساعة",
+            "phoneSupport": "الدعم الهاتفي",
+            "phoneDirectLine": "خط مباشر للحالات الحرجة"
+        }
+    },
+    "alerts": {
+        "pageTitle": "مركز التنبيهات",
+        "pageDescription": "إدارة وتتبع التنبيهات وتحويلها إلى حالات عمل قابلة للتنفيذ",
+        "alerts": "تنبيه",
+        "noAlerts": "لا توجد تنبيهات تطابق معايير البحث",
+        "search": "بحث بالاسم أو القسم أو رقم التنبيه...",
+        "selectAlert": "تحديد التنبيه",
+        "selectToView": "اختر تنبيهاً من القائمة لعرض التفاصيل",
+        "quickActions": "إجراءات سريعة",
+        "riskScore": "نسبة المخاطر",
+        "summary": "الملخص",
+        "signalExplanation": "تحليل الإشارة (XAI)",
+        "suggestedAction": "الإجراء المقترح",
+        "linkedEntities": "الكيانات المرتبطة",
+        "auditTrail": "سجل النشاط",
+        "acknowledge": "استلام",
+        "assignOwner": "تعيين مسؤول",
+        "convertToCase": "تحويل لحالة",
+        "dismiss": "رفض",
+        "escalate": "تصعيد",
+        "markRead": "تحديد كمقروء",
+        "markAllRead": "تحديد الكل كمقروء",
+        "bulkAcknowledge": "استلام المحدد",
+        "bulkConvert": "تحويل المحدد لحالات",
+        "exportCSV": "تصدير CSV"
+    }
+}

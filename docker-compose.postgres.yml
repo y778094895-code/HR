@@ -1,0 +1,36 @@
+version: '3.8'
+
+# Standalone Postgres service for local development / migration runs.
+#
+# Usage:
+#   docker compose -f docker-compose.postgres.yml up -d
+#   # wait for healthy, then:
+#   ./run_migrations.sh
+
+services:
+  postgres:
+    image: postgres:14-alpine
+    container_name: smart_hr_postgres
+    restart: unless-stopped
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    volumes:
+      # Persistent data volume
+      - postgres_data:/var/lib/postgresql/data
+      # Mount postgres/ folder at /postgres (NOT initdb.d — migrations are
+      # run manually via run_migrations.sh, not auto-executed by Postgres)
+      - ./postgres:/postgres:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+
+volumes:
+  postgres_data:
+    driver: local

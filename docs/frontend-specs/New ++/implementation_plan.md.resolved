@@ -1,0 +1,75 @@
+# Goal Description
+Transform the current analytics-centric Smart HR UI into a Case-Centric product. Analytics will now produce "Signals" that feed into "Alerts", which are then converted into "Cases" spanning a full lifecycle (Open → Assign → Act → Monitor → Measure → Close).
+
+## Proposed Changes
+
+### Routing and Navigation
+#### [MODIFY] [client/src/App.tsx](file:///d:/%D9%85%D8%B4%D8%B1%D9%88%D8%B9/14-2-2026/2026-2-13/smart_performance_system/client/src/App.tsx)
+- Add new routes: `/dashboard/alerts`, `/dashboard/cases`, `/dashboard/data-quality`.
+- Ensure legacy routes (like `/dashboard/interventions`) still work or redirect appropriately.
+
+#### [MODIFY] [client/src/components/layout/_nav.ts](file:///d:/%D9%85%D8%B4%D8%B1%D9%88%D8%B9/14-2-2026/2026-2-13/smart_performance_system/client/src/components/layout/_nav.ts)
+- Update the sidebar navigation items to match the 15-item IA grouping (RTL labels).
+- Integrate Alerts, Case Management, and Data Quality into the navigation, applying the correct RBAC rules.
+
+---
+### New Core Centers
+
+#### [NEW] `client/src/pages/dashboard/AlertsPage.tsx`
+- New top-level page for the Alerts Center.
+
+#### [NEW] `client/src/components/features/alerts/...`
+- Add `AlertsList.tsx` for viewing All, Unread, and High Severity alerts.
+- Add `AlertDrawer.tsx` with tabs for Summary, Signal, Action, and "Open Case" behavior.
+
+#### [NEW] `client/src/pages/dashboard/CasesPage.tsx`
+- New top-level page for Case Management.
+
+#### [NEW] `client/src/components/features/cases/...`
+- Add `CasesList.tsx` grouping cases by Open, In Progress, Review, and Closed.
+- Add `CaseDetailsDrawer.tsx` (or Page) with tabs: Summary, Signals, Actions, Monitoring, Impact, Timeline.
+- Add `useCases.ts` to manage local mock state/persistence using `localStorage`.
+
+#### [NEW] `client/src/pages/dashboard/DataQualityPage.tsx`
+- New top-level page for Data Quality.
+
+#### [NEW] `client/src/components/features/data-quality/...`
+- Implement `DataQualityDashboard.tsx` for missing/conflicting value scans, policy controls, and logs.
+
+---
+### Refactor Existing Modules (Case Integration)
+
+#### [MODIFY] `client/src/components/features/turnover/RiskList.tsx` (or similar Attrition view)
+- Add column/action to "Open Case" from a high-risk employee record.
+
+#### [MODIFY] [client/src/components/features/performance/EmployeePerformanceList.tsx](file:///d:/%D9%85%D8%B4%D8%B1%D9%88%D8%B9/14-2-2026/2026-2-13/smart_performance_system/client/src/components/features/performance/EmployeePerformanceList.tsx) (or similar)
+- Add action to "Initiate PIP / Open Case" for underperforming employees.
+
+#### [MODIFY] [client/src/components/features/fairness/DemographicAnalysis.tsx](file:///d:/%D9%85%D8%B4%D8%B1%D9%88%D8%B9/14-2-2026/2026-2-13/smart_performance_system/client/src/components/features/fairness/DemographicAnalysis.tsx)
+- Allow admins to "Open Case" for flagged fairness/bias issues.
+
+#### [MODIFY] `client/src/components/features/interventions/RecommendationsList.tsx`
+- Enhance the UI to support "What-if" scenario comparisons.
+- Modify the "Approve Scenario" workflow to create/link to a Case instead of just logging.
+
+#### [MODIFY] `client/src/pages/dashboard/EmployeesPage.tsx` (or `EmployeeList`)
+- Ensure the Employee profile view has an explicit "Open Case" action.
+
+---
+### Documentation
+#### [NEW] `docs/client-ui-refactor-changelog.md`
+- Generates a full inventory of added, modified, and removed files along with explanations as requested.
+
+## Verification Plan
+
+### Automated Tests
+- Since this is primarily a UI refactoring involving feature additions and visual alignments, we will ensure that `npm run build` succeeds without TS compilation errors.
+- Run `npm test` if there are existing tests to verify no regressions occur in refactored components.
+
+### Manual Verification
+1. Open the application locally `npm run dev` and log in.
+2. Verify that the Sidebar aligns with the 15 requested IA items in Arabic context.
+3. Access "Alerts Center", select an alert, and click "Open Case". Verify the flow transitions correctly to the Case Management center.
+4. Verify that data persists within a session for "Cases" (mocked via localStorage/state).
+5. From the "Attrition" or "Performance" screens, test the "Open Case" workflow.
+6. Check role-based access for the `Fairness` and `Users` sections ensuring only authorized users can view them.

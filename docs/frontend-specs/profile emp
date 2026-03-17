@@ -1,0 +1,55 @@
+# Operational Intelligence Console Implementation
+
+## Goal Description
+Upgrade the existing `EmployeeProfilePage` to a high-performance **Operational Intelligence Console**. The new design will incorporate tab caching, lazy loading, RBAC rendering rules, and a robust drawer state machine. We will mock missing backend data using our API client layers, guaranteeing a seamless UX without altering actual DB endpoints. 
+
+## Proposed Changes
+
+### Configuration & Utilities
+#### [NEW] `client/src/hooks/usePermissions.ts`
+Implement `usePermissions` based on `useAuthStore` to define frontend capabilities (e.g., `canViewXaiDrivers`, `canCreateCase`, `canViewSalary`).
+
+#### [NEW] `client/src/services/api/employeeQueryKeys.ts`
+Define query keys for `@tanstack/react-query` to ensure each tab and the header component have isolated caching scopes (`employeeKeys`).
+
+### Shared Components
+#### [NEW] `client/src/components/shared/RestrictedView.tsx`
+A fallback UI component used whenever RBAC checks indicate the user lacks permission to view a specific tab or section.
+
+### Layout Components
+#### [MODIFY] [client/src/pages/dashboard/EmployeeProfilePage.tsx](file:///d:/%D9%85%D8%B4%D8%B1%D9%88%D8%B9/14-2-2026/2026-2-13/smart_performance_system/client/src/pages/dashboard/EmployeeProfilePage.tsx)
+Refactor the main page to act as the Hub. It will orchestrate fetching the [Header](file:///d:/%D9%85%D8%B4%D8%B1%D9%88%D8%B9/14-2-2026/2026-2-13/smart_performance_system/client/src/components/ui/cards/card.tsx#18-30) and mounting the `ProfileTabs`.
+
+#### [NEW] `client/src/components/features/employees/profile/EmployeeHeaderSticky.tsx`
+Implement the sticky header displaying the identity and the Risk Snapshot strip inline.
+
+#### [NEW] [client/src/components/features/employees/profile/ProfileTabs.tsx](file:///d:/%D9%85%D8%B4%D8%B1%D9%88%D8%B9/14-2-2026/2026-2-13/smart_performance_system/client/src/components/features/employees/profile/ProfileTabs.tsx)
+Implement the 8 separate horizontal tabs using the existing `TabsContainer`, wrapping native content within `React.Suspense` and `React.lazy` wrappers for code splitting.
+
+### Tabs
+Create the following tab components beneath `client/src/components/features/employees/profile/tabs/`:
+- `OverviewTab.tsx`
+- `PerformanceTab.tsx`
+- `AttritionTab.tsx`
+- `TrainingTab.tsx`
+- `FairnessTab.tsx`
+- `CasesTab.tsx`
+- `ImpactTab.tsx`
+- `TimelineTab.tsx`
+
+*Each tab will utilize its respective `React Query` hook and gracefully handle Loading, Error, Empty, Normal, and Restricted states.*
+
+### Drawers (State Machine)
+Create the following beneath `client/src/components/features/employees/profile/drawers/`:
+- `ProfileActionDrawer.tsx` (the wrapper container)
+- `CreateCaseForm.tsx`
+- `AssignInterventionForm.tsx`
+- `XaiExplanationView.tsx`
+
+We will manage drawer state directly at the `EmployeeProfilePage` or via simple Context to limit Prop Drilling while ensuring dirty form guards are respected.
+
+## Verification Plan
+1. **Performance Check:** Load the Profile Page and assert the network tab only downloads the JavaScript chunk required for the initial loaded Tab (`Overview`), proving code stringing works.
+2. **Tab Navigation Cache Check:** Alternate viewing `Performance`, then `Fairness`, then `Performance` again over a 20-second span. Verify the UI resolves immediately on return via React Query Cache.
+3. **RBAC Rule Check:** View `FairnessTab` while impersonating different role sessions inside React Developer Tools to assure masking is accurately applied (e.g., `canViewSalary`).
+4. **Drawer Robustness:** Launch the `Create Case` drawer, edit a field, and try closing it. Validate the UX blocking modal appears.

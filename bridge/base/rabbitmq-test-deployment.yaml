@@ -1,0 +1,57 @@
+#! rabbitmq-test-deployment.yaml
+# Generated code, do not edit
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: rabbitmq-test
+    namespace: smart-performance-system
+    labels:
+        com.docker.compose.project: smart_performance_system
+        com.docker.compose.service: rabbitmq-test
+spec:
+    replicas: 1
+    selector:
+        matchLabels:
+            com.docker.compose.project: smart_performance_system
+            com.docker.compose.service: rabbitmq-test
+    strategy:
+        type: Recreate
+    template:
+        metadata:
+            labels:
+                com.docker.compose.project: smart_performance_system
+                com.docker.compose.service: rabbitmq-test
+                com.docker.compose.network.default: "true"
+        spec:
+            containers:
+                - name: rabbitmq-test
+                  image: rabbitmq:3-management-alpine
+                  imagePullPolicy: IfNotPresent
+                  env:
+                    - name: RABBITMQ_DEFAULT_PASS
+                      value: "testpassword"
+                    - name: RABBITMQ_DEFAULT_USER
+                      value: "testuser"
+                  livenessProbe:
+                    exec:
+                        command: [rabbitmq-diagnostics -q ping]
+                    periodSeconds: 5
+                    timeoutSeconds: 10
+                    failureThreshold: 5
+                  ports:
+                    - name: rabbitmq--25672
+                      containerPort: 25672
+                    - name: rabbitmq--15672
+                      containerPort: 15672
+                    - name: rabbitmq--15692
+                      containerPort: 15692
+                    - name: rabbitmq-t-4369
+                      containerPort: 4369
+                    - name: rabbitmq-t-5671
+                      containerPort: 5671
+                    - name: rabbitmq-t-5672
+                      containerPort: 5672
+                    - name: rabbitmq--15671
+                      containerPort: 15671
+                    - name: rabbitmq--15691
+                      containerPort: 15691

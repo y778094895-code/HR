@@ -1,0 +1,45 @@
+FROM python:3.11-slim
+
+WORKDIR /app
+
+# System dependencies
+RUN apt-get update && apt-get install -y \
+    gcc \
+    g++ \
+    libpq-dev \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install all required Python packages
+RUN pip install --no-cache-dir --upgrade pip && \
+    pip install --no-cache-dir \
+        fastapi \
+        uvicorn \
+        scikit-learn \
+        xgboost \
+        pandas \
+        numpy \
+        shap \
+        joblib \
+        lifelines \
+        psycopg2-binary \
+        redis \
+        aio-pika \
+        mlflow \
+        python-dotenv \
+        pydantic \
+        python-consul \
+        sqlalchemy \
+        python-multipart \
+        httpx
+
+# Copy application source
+COPY ml-service/ .
+COPY shared/ ./shared/
+
+# Create models directory
+RUN mkdir -p /app/models && chmod 777 /app/models
+
+EXPOSE 8000
+
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]

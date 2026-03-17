@@ -1,0 +1,85 @@
+# Sidebar Single-Open Accordion + Sub-Route Hubs Implementation Plan
+
+## Goal Description
+Enhance the Sidebar navigation to operate as a single-open accordion. Ensure that every sidebar sub-item navigates to a dedicated page (or "Module Hub") where the page title (H1) dynamically updates to match the clicked sub-item, and the page renders the specific requested tabs. This approach heavily relies on URL state (`?view=` inside `TabsContainer`) to sync internal tabs while updating the surrounding hub layout.
+
+## Proposed Changes
+
+### Part A: Sidebar Behavior Fix (Accordion)
+#### [MODIFY] `client/src/components/layout/DashboardLayout.tsx`
+- Replace `expandedSections: Record<string, boolean>` with a single `activeSectionKey: string | null`.
+- Update the initialization logic from `localStorage` (`sidebar_active_section_v1`) to read/write a single string.
+- Update `toggleSection(id)` to set `activeSectionKey` to `id` (if not already active) or `null` (if currently active).
+- Update the rendering check to `isExpanded = activeSectionKey === item.id`.
+- The auto-expand logic on mount/navigate will set the `activeSectionKey` to the parent matched by the current path.
+
+### Part B: Sub-Item Pages (Module Hubs)
+We will transition primary pages into "Module Hubs". Each hub will read the `?view=` parameter (or `?tab=`) to dynamically render the correct **H1 Title** and a configured `TabsContainer`.
+
+#### [1] Alerts Hub
+- **Modify:** `AlertsPage.tsx`
+- **Logic:** Read `?view=` (all, unread, high, response). Render Title based on view. Pass `view` filter down to `AlertsList.tsx`.
+
+#### [2] Performance Intelligence Hub
+- **Modify:** `PerformancePage.tsx`
+- **Logic:** Read `?view=` (continuous, kpi, underperformance). Render Title based on view. Render nested `TabsContainer` containing the required internal tabs for that view (e.g. Individual, Teams, Time Comparison for Continuous Analysis).
+
+#### [3] Attrition Hub
+- **Modify:** `AttritionPage.tsx`
+- **Logic:** Similar to Performance. Sub-views are `risk`, `drivers`, `cost`.
+
+#### [4] Training Hub
+- **Modify:** `TrainingPage.tsx`
+- **Logic:** Sub-views: `needs`, `programs`, `impact`.
+
+#### [5] Fairness Hub
+- **Modify:** `FairnessPage.tsx`
+- **Logic:** Sub-views: `monitoring`, `alerts`, `explanations`.
+
+#### [6] Recommendations Hub
+- **Modify:** `RecommendationsPage.tsx`
+- **Logic:** Sub-views: `smart`, `uplift`, `simulation`.
+
+#### [7] Case Management Hub
+- **Modify:** `CasesPage.tsx`
+- **Logic:** Sub-views: `open`, `progress`, `review`, `closed`. Passes filter to `CasesList`.
+
+#### [8] Impact Analysis Hub
+- **Modify:** `ImpactPage.tsx`
+- **Logic:** Sub-views: `performance`, `attrition`, `training`, `comparison`.
+
+#### [9] Reports Hub
+- **Modify:** `ReportsPage.tsx`
+- **Logic:** Sub-views: `library`, `builder`, `exports`.
+
+#### [10] Data Quality Hub
+- **Modify:** `DataQualityPage.tsx`
+- **Logic:** Sub-views: `scan`, `policies`, `audit`, `alerts`.
+
+#### [11] Users Hub
+- **Modify:** `UserManagementPage.tsx`
+- **Logic:** Sub-views: `users`, `roles`, `visibility`, `audit`.
+
+#### [12] Settings Hub
+- **Modify:** `SettingsPage.tsx`
+- **Logic:** Sub-views: `org`, `thresholds`, `models`, `notifications`, `export`.
+
+#### [13] Help Hub
+- **Modify:** `HelpCenterPage.tsx`
+- **Logic:** Sub-views: `guide`, `faq`, `support`.
+
+*Note*: For Employees and Dashboard, they either already behave as list/detail hubs or will be lightly modified to read `?view=` for role perspectives.
+
+### Documentation
+#### [NEW] `docs/sidebar-accordion-subpages.md`
+- Detail the single-open sidebar mechanic.
+- Provide a full mapping table of Main Section → Sub-Items → Hub Routes.
+- Include a list of modified files.
+
+## User Review Required
+Does the "Module Hub" approach using `?view=` query parameters perfectly align with your expectations for the URL structure? (e.g. `/dashboard/alerts?view=high`).
+
+## Verification Plan
+1. Launch Dev Server and navigate the sidebar. Check that clicking a new parent collapses the old one.
+2. Click nested sub-items across `Alerts`, `Performance`, `Attritions`. Ensure H1 updates instantly and the correct internal tabs are visible.
+3. Refresh the page to verify URL sync stays intact.

@@ -1,0 +1,38 @@
+# Hard Logout Reset & Complete Navigation
+
+## Goal Description
+Implement a complete logout reset ensuring no authentication tokens are left behind, and reorder the sidebar navigation to expose all existing dashboard pages in a logical and consistent way.
+
+## Proposed Changes
+
+### [MODIFY] `src/contexts/AuthContext.tsx`
+- Export a new utility function `clearAuthStorage()` that removes `auth_token`, `auth_user`, and `auth_v1` from `localStorage`.
+- Update the `logout` function to use `clearAuthStorage()`.
+- Update the initialization logic (in `useEffect`) to use `clearAuthStorage()` if invalid user data parsing gets caught.
+
+### [MODIFY] `src/components/layout/DashboardLayout.tsx`
+- Update the `handleLogout` function to manually clear `auth_token`, `auth_user`, and `auth_v1` using `localStorage` directly (in addition to the `AuthContext` call).
+- Update the call to `navigate('/login')` to include `{ replace: true }` so the dashboard state isn't kept in browser history.
+
+### [MODIFY] `src/components/layout/_nav.ts`
+- Reorder `NAV_ITEMS` array to match the requested logical sequence exactly:
+  1. لوحة التحكم (`/dashboard`)
+  2. الأداء (`/dashboard/performance`)
+  3. الاستقالات (`/dashboard/attrition`)
+  4. التدريب (`/dashboard/training`)
+  5. العدالة (`/dashboard/fairness`)
+  6. التدخلات (`/dashboard/interventions`)
+  7. التقارير (`/dashboard/reports`)
+  8. تحليل الأثر (`/dashboard/impact`)
+  9. الموظفين (`/dashboard/vo-employees`)
+  10. إدارة المستخدمين (`/dashboard/users`)
+  11. الإعدادات (`/dashboard/settings`)
+  12. المساعدة (`/dashboard/help`)
+- Ensure roles and icons match the correct mappings.
+
+## Verification Plan
+- Manual check using the Acceptance Tests provided in the request:
+  - Verify user is redirected on logout.
+  - Verify `localStorage` is empty of auth keys after logout.
+  - Test browser back does not reveal protected content.
+  - Check sidebar reordering works correctly for respective roles.

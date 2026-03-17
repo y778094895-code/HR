@@ -1,0 +1,47 @@
+# Sidebar Nested Sub-Navigation Implementation Plan
+
+## Goal Description
+Upgrade the existing Sidebar navigation system in the Smart HR Client to support **nested / expandable navigation** aligned with the Case-Centric Information Architecture. The implementation will include role-based access control (RBAC), RTL/LTR compatibility, persisted expand/collapse states, and deep linking for sub-tabs.
+
+## Proposed Changes
+
+### 1. Navigation Configuration
+#### [MODIFY] [client/src/components/layout/_nav.ts](file:///d:/%D9%85%D8%B4%D8%B1%D9%88%D8%B9/14-2-2026/2026-2-13/smart_performance_system/client/src/components/layout/_nav.ts)
+- Extend the [NavItem](file:///d:/%D9%85%D8%B4%D8%B1%D9%88%D8%B9/14-2-2026/2026-2-13/smart_performance_system/client/src/components/layout/_nav.ts#21-28) interface to support an optional `children` array (sub-items).
+- Add all sub-items specified in the IA requirements to their respective parent nodes.
+- Use deep links (e.g., `?tab=admin` or `?view=performance`) for sub-items that correspond to tabs within existing pages.
+- Apply `rolesAllowed` to sub-items to respect RBAC gating.
+- Update [filterNavByRole](file:///d:/%D9%85%D8%B4%D8%B1%D9%88%D8%B9/14-2-2026/2026-2-13/smart_performance_system/client/src/components/layout/_nav.ts#132-145) to recursively or selectively filter out sub-items, and hide parent sections if they have no visible sub-items left.
+
+### 2. Sidebar Component UI and Interaction
+#### [MODIFY] [client/src/components/layout/DashboardLayout.tsx](file:///d:/%D9%85%D8%B4%D8%B1%D9%88%D8%B9/14-2-2026/2026-2-13/smart_performance_system/client/src/components/layout/DashboardLayout.tsx)
+- Implement local state for tracking expanded/collapsed parent sections.
+- Integrate `localStorage` to persist the expanded state (`sidebar_expanded_sections_v1`).
+- Add auto-expansion logic based on the `location.pathname` upon mount or path changes.
+- Update the [NavContent](file:///d:/%D9%85%D8%B4%D8%B1%D9%88%D8%B9/14-2-2026/2026-2-13/smart_performance_system/client/src/components/layout/DashboardLayout.tsx#36-74) rendering logic to display parent items with a toggleable chevron icon.
+- Render sub-items iteratively beneath the parent when expanded, ensuring indentation and styling handles RTL/LTR properly.
+- Update mobile UX to close the sidebar `Sheet` when a sub-item is navigated.
+
+### 3. Locale Updates
+#### [MODIFY] [client/src/locales/ar.json](file:///d:/%D9%85%D8%B4%D8%B1%D9%88%D8%B9/14-2-2026/2026-2-13/smart_performance_system/client/src/locales/ar.json) & [en.json](file:///d:/%D9%85%D8%B4%D8%B1%D9%88%D8%B9/14-2-2026/2026-2-13/smart_performance_system/client/src/locales/en.json)
+- Add new i18n keys for all the newly introduced sub-items to maintain full Arabic RTL support and English translation parity.
+
+### 4. Documentation
+#### [NEW] `docs/sidebar-nested-navigation.md`
+- Create documentation outlining the behavior (expand/collapse, persistence), IA mapping, deep-link conventions, and the affected files.
+
+## User Review Required
+None specifically, but RBAC and Deep Links mapping will be closely matched to existing patterns.
+
+## Verification Plan
+
+### Automated Tests
+- Run TS build to ensure interface extensions do not break existing code.
+
+### Manual Verification
+- **AT-Sidebar-01:** Navigate the sidebar and check expand/collapse behavior on main items.
+- **AT-Sidebar-02:** Click sub-items and ensure they navigate correctly to existing routes or deep links.
+- **AT-Sidebar-03:** Reload the page to confirm that the expanded/collapsed state persists.
+- **AT-Sidebar-04:** Check that the current route's parent section auto-expands on initial load.
+- **AT-RBAC-01:** Log in with different mock roles (if possible) or review filtering logic to ensure forbidden items are hidden.
+- **AT-RTL-01:** Switch direction (RTL/LTR) to confirm alignment, indentation, and chevron direction remain proper.

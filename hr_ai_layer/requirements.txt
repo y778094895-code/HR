@@ -1,0 +1,33 @@
+# Core
+numpy>=1.26
+pandas>=2.2
+pyarrow>=16.0
+
+# ML / Survival
+scikit-learn>=1.5
+lifelines>=0.29
+shap>=0.46
+
+# Tracking / Registry
+mlflow>=2.14
+
+# Serving
+fastapi>=0.111
+uvicorn[standard]>=0.30
+
+# Validation / Config
+pydantic>=2.7
+pydantic-settings>=2.3
+pandera>=0.20
+
+# DB
+sqlalchemy>=2.0
+psycopg[binary]>=3.1
+
+# Observability
+prometheus-client>=0.20
+structlog>=24.1
+
+# Utils
+python-dotenv>=1.0
+rich>=13.7

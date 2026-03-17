@@ -1,0 +1,41 @@
+# Application Routes & RBAC Implementation
+
+## User Review Required
+No major architectural changes, just enforcing the RBAC defined in the specs across the routers and navigation menus.
+
+## Proposed Changes
+
+### Routes (`src/App.tsx`)
+We will add `ProtectedRoute` wrappers with `allowedRoles` to the following routes that are currently unprotected inside the dashboard:
+- `/dashboard/interventions` -> `['admin', 'manager']`
+- `/dashboard/impact` -> `['admin', 'manager']`
+- `/dashboard/vo-employees` -> `['admin', 'manager']`
+
+*Note:* Routes like `/dashboard/performance`, `/dashboard/training`, `/dashboard/fairness`, `/dashboard/reports`, and `/dashboard/users` already have `ProtectedRoute` matching the spec.
+
+### Navigation Sidebar (`src/components/layout/_nav.ts`)
+We will update `NAV_ITEMS` to include new missing routes from the specs and assign `rolesAllowed` to filter them properly in the `DashboardLayout`.
+
+**Modifications to Existing:**
+- `interventions`: add `rolesAllowed: ['admin', 'manager']`
+- `employees`: add `rolesAllowed: ['admin', 'manager']` (Path: `/dashboard/vo-employees`)
+- `impact`: add `rolesAllowed: ['admin', 'manager']`
+
+**Additions:**
+- `performance`: الأداء (`['admin', 'manager']`)
+- `attrition`: الاستقالات (`['admin', 'manager']`)
+- `training`: التدريب (`['admin', 'manager', 'employee']`)
+- `fairness`: العدالة (`['admin']`)
+- `reports`: التقارير (`['admin', 'manager']`)
+- `settings`: الإعدادات (`undefined` - all)
+- `help`: المساعدة (`undefined` - all)
+
+We will import necessary icons from `lucide-react` for these new items.
+
+## Verification Plan
+
+### Automated Tests
+- Run `npm run build` or `tsc --noEmit` to ensure there are no TypeScript errors with the new Lucide icons or route configs.
+
+### Manual Verification
+- Code review of `App.tsx` and `_nav.ts` to ensure exact match with the "3-navigation-map.md" spec.

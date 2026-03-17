@@ -1,0 +1,19 @@
+#! redis-test-service.yaml
+# Generated code, do not edit
+apiVersion: v1
+kind: Service
+metadata:
+    name: redis-test-published
+    namespace: smart-performance-system
+    labels:
+        com.docker.compose.project: smart_performance_system
+        com.docker.compose.service: redis-test
+spec:
+    selector:
+        com.docker.compose.project: smart_performance_system
+        com.docker.compose.service: redis-test
+    ports:
+        - name: redis-test-6381
+          port: 6381
+          protocol: TCP
+          targetPort: redis-test-6379

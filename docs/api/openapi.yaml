@@ -1,0 +1,150 @@
+openapi: 3.0.0
+info:
+  title: Smart HR Performance System API
+  description: Backend APIs for the Smart HR Performance Management System. Handles Employee lifecycle, Fairness, Interventions, Performance, Training, Machine Learning (BFF), and Reports.
+  version: 1.0.0
+servers:
+  - url: http://localhost:8080/api
+    description: Local API Gateway
+paths:
+  /auth/login:
+    post:
+      summary: User Login
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                password:
+                  type: string
+      responses:
+        '200':
+          description: Successful login
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    type: object
+                    properties:
+                      access_token:
+                        type: string
+                      user:
+                        type: object
+
+  /dashboard/stats:
+    get:
+      summary: Get unified dashboard statistics
+      responses:
+        '200':
+          description: Returns KPIs and trends
+          
+  /employees:
+    get:
+      summary: Get all employees
+      responses:
+        '200':
+          description: List of employees
+    post:
+      summary: Create employee
+      responses:
+        '201':
+          description: Created
+          
+  /employees/{id}:
+    get:
+      summary: Get employee by ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Employee object
+          
+  /turnover/risks:
+    get:
+      summary: Get paginated high risk employees
+      responses:
+        '200':
+          description: Turnover risks
+
+  /ml/predictions/turnover:
+    post:
+      summary: Predict turnover risk for a single employee
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                employee_id:
+                  type: string
+      responses:
+        '200':
+          description: Prediction score
+
+  /ml/predictions/batch:
+    post:
+      summary: Batch predict turnover risk for multiple employees
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                employee_ids:
+                  type: array
+                  items:
+                    type: string
+      responses:
+        '200':
+          description: Map of IDs to scores
+
+  /training/recommendations:
+    get:
+      summary: Get training pipeline recommendations
+      responses:
+        '200':
+          description: Training data
+
+  /reports/jobs:
+    post:
+      summary: Dispatch an async report generation job
+      responses:
+        '201':
+          description: Returns jobId
+
+  /reports/jobs/{jobId}:
+    get:
+      summary: Poll status of a report job
+      parameters:
+        - in: path
+          name: jobId
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Returns { status, fileUrl }
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+security:
+  - bearerAuth: []

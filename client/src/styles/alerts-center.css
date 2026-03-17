@@ -1,0 +1,122 @@
+/* ============================================================
+   Alerts Center — Styles
+   ============================================================ */
+
+/* Severity gradient system */
+.alert-severity-critical {
+    border-inline-start: 4px solid #ef4444;
+    background: rgba(254, 242, 242, 0.6);
+}
+
+.alert-severity-high {
+    border-inline-start: 4px solid #f97316;
+    background: rgba(255, 247, 237, 0.4);
+}
+
+.alert-severity-medium {
+    border-inline-start: 4px solid #f59e0b;
+    background: rgba(255, 251, 235, 0.3);
+}
+
+.alert-severity-low {
+    border-inline-start: 4px solid #cbd5e1;
+}
+
+/* Dark mode overrides */
+[data-theme="dark"] .alert-severity-critical,
+[data-theme="midnight"] .alert-severity-critical {
+    border-inline-start-color: #f87171;
+    background: rgba(127, 29, 29, 0.2);
+}
+
+[data-theme="dark"] .alert-severity-high,
+[data-theme="midnight"] .alert-severity-high {
+    border-inline-start-color: #fb923c;
+    background: rgba(124, 45, 18, 0.15);
+}
+
+[data-theme="dark"] .alert-severity-medium,
+[data-theme="midnight"] .alert-severity-medium {
+    border-inline-start-color: #fbbf24;
+    background: rgba(120, 53, 15, 0.1);
+}
+
+[data-theme="dark"] .alert-severity-low,
+[data-theme="midnight"] .alert-severity-low {
+    border-inline-start-color: #475569;
+}
+
+/* Status badge pills */
+.alert-status-pill {
+    font-size: 10px;
+    padding: 2px 8px;
+    border-radius: 9999px;
+    font-weight: 500;
+}
+
+/* Side panel slide animation */
+@keyframes alerts-slide-in {
+    from {
+        opacity: 0;
+        transform: translateX(12px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.alert-details-enter {
+    animation: alerts-slide-in 0.25s ease-out;
+}
+
+/* Hover micro-interactions */
+.alert-card-hover {
+    transition: all 0.2s ease;
+}
+
+.alert-card-hover:hover {
+    box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1);
+    transform: translateY(-1px);
+}
+
+/* Risk bar animation */
+.risk-bar-fill {
+    transition: all 0.5s ease-out;
+}
+
+/* Split pane layout */
+.alerts-split-pane {
+    display: flex;
+    overflow: hidden;
+}
+
+.alerts-list-pane {
+    flex-shrink: 0;
+    border-inline-end: 1px solid hsl(var(--border) / 0.5);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.alerts-details-pane {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+/* Scrollbar styling for alerts list */
+.alerts-scrollable::-webkit-scrollbar {
+    width: 4px;
+}
+
+.alerts-scrollable::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.alerts-scrollable::-webkit-scrollbar-thumb {
+    background: hsl(var(--accent));
+    border-radius: 999px;
+}

@@ -1,0 +1,48 @@
+#! postgres-test-deployment.yaml
+# Generated code, do not edit
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: postgres-test
+    namespace: smart-performance-system
+    labels:
+        com.docker.compose.project: smart_performance_system
+        com.docker.compose.service: postgres-test
+spec:
+    replicas: 1
+    selector:
+        matchLabels:
+            com.docker.compose.project: smart_performance_system
+            com.docker.compose.service: postgres-test
+    strategy:
+        type: Recreate
+    template:
+        metadata:
+            labels:
+                com.docker.compose.project: smart_performance_system
+                com.docker.compose.service: postgres-test
+                com.docker.compose.network.default: "true"
+        spec:
+            containers:
+                - name: postgres-test
+                  image: postgres:16-alpine
+                  imagePullPolicy: IfNotPresent
+                  env:
+                    - name: POSTGRES_DB
+                      value: "testdb"
+                    - name: POSTGRES_PASSWORD
+                      value: "testpassword"
+                    - name: POSTGRES_USER
+                      value: "testuser"
+                  livenessProbe:
+                    exec:
+                        command:
+                            - /bin/sh
+                            - -c
+                            - pg_isready -U testuser -d testdb
+                    periodSeconds: 5
+                    timeoutSeconds: 5
+                    failureThreshold: 5
+                  ports:
+                    - name: postgres-t-5432
+                      containerPort: 5432

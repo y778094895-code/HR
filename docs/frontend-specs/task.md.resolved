@@ -1,0 +1,41 @@
+# Alerts Center — Implementation Task List
+
+## Phase 1: Core Data Layer
+- [ ] Create `src/types/alerts.ts` — types/contracts matching spec
+- [ ] Rewrite [src/stores/business/alert.store.ts](file:///d:/%D9%85%D8%B4%D8%B1%D9%88%D8%B9/14-2-2026/2026-2-13/smart_performance_system/client/src/stores/business/alert.store.ts) — full lifecycle, audit trail, RBAC-aware, expanded mock data
+- [ ] Create `src/services/adapters/alerts.adapter.ts` — AlertsDataAdapter + AlertsRepository (localStorage)
+
+## Phase 2: RBAC & Permissions
+- [ ] Create `src/lib/alerts-permissions.ts` — permission matrix mapping existing roles
+
+## Phase 3: Alert List Components (Left Panel)
+- [ ] Create `src/components/features/alerts/AlertCard.tsx` — severity-colored card with quick actions
+- [ ] Create `src/components/features/alerts/AlertListPanel.tsx` — scrollable list with multi-select, shift-click
+
+## Phase 4: Alert Details Panel (Right Panel)
+- [ ] Create `src/components/features/alerts/AlertDetailsPanel.tsx` — all 5 sections (summary, XAI, suggested action, linked entities, action controls)
+
+## Phase 5: Filter & Control Bar
+- [ ] Create `src/components/features/alerts/AlertFilters.tsx` — sticky filters, search, sort, bulk actions
+
+## Phase 6: Main Page Assembly
+- [ ] Rewrite [src/pages/dashboard/AlertsPage.tsx](file:///d:/%D9%85%D8%B4%D8%B1%D9%88%D8%B9/14-2-2026/2026-2-13/smart_performance_system/client/src/pages/dashboard/AlertsPage.tsx) — split-pane layout, keyboard shortcuts, CSV export
+- [ ] Update [src/components/features/alerts/AlertsList.tsx](file:///d:/%D9%85%D8%B4%D8%B1%D9%88%D8%B9/14-2-2026/2026-2-13/smart_performance_system/client/src/components/features/alerts/AlertsList.tsx) — remove/replace old implementation (kept as backup reference)
+
+## Phase 7: Export & Utility
+- [ ] Add CSV export function in page (alerts export CSV utility)
+
+## Phase 8: Sidebar & i18n Updates
+- [ ] Keep [_nav.ts](file:///d:/%D9%85%D8%B4%D8%B1%D9%88%D8%B9/14-2-2026/2026-2-13/smart_performance_system/client/src/components/layout/_nav.ts) as-is (already has alerts entry)
+- [ ] Update [src/locales/ar.json](file:///d:/%D9%85%D8%B4%D8%B1%D9%88%D8%B9/14-2-2026/2026-2-13/smart_performance_system/client/src/locales/ar.json) — add alerts-related keys
+- [ ] Update [src/locales/en.json](file:///d:/%D9%85%D8%B4%D8%B1%D9%88%D8%B9/14-2-2026/2026-2-13/smart_performance_system/client/src/locales/en.json) — add alerts-related keys
+
+## Phase 9: Alerts Center CSS
+- [ ] Create `src/styles/alerts-center.css` — severity gradients, animations, split-pane styles
+
+## Phase 10: Documentation
+- [ ] Create `docs/alerts-center-changelog.md`
+
+## Phase 11: Verification
+- [ ] Build check (`npm run build`)
+- [ ] Browser visual verification

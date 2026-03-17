@@ -1,0 +1,39 @@
+# Application Language Switching (i18n)
+
+## Goal Description
+Implement full application-wide language switching between Arabic (RTL) and English (LTR). The language should default to Arabic if not set, persist in `localStorage` under `app_lang`, and be applied *only* when the user clicks "Save Changes" in the Settings → General tab.
+
+## Proposed Changes
+
+### [NEW] `src/locales/en.json` & `src/locales/ar.json`
+- Comprehensive translation files containing keys organized by namespaces/features: `common`, `auth`, `navigation`, `dashboard`, `performance`, `attrition`, `training`, `fairness`, `reports`, `settings`, `help`, `tables`, etc.
+
+### [NEW] `src/lib/i18n.ts`
+- Setup and initialize `i18next` using `react-i18next`.
+- On init: read `localStorage.getItem('app_lang')` (default `'ar'`).
+- Update `document.documentElement.dir` to `rtl` for 'ar' and `ltr` for 'en'.
+- Update `document.documentElement.lang` to 'ar' or 'en'.
+
+### [MODIFY] `src/main.tsx`
+- Import `src/lib/i18n.ts` so translations are loaded before rendering the app.
+
+### [MODIFY] [src/components/layout/DashboardLayout.tsx](file:///d:/%D9%85%D8%B4%D8%B1%D9%88%D8%B9/14-2-2026/2026-2-13/smart_performance_system/client/src/components/layout/DashboardLayout.tsx)
+- Remove hardcoded `dir="rtl"` from the layout wrapper.
+- Ensure RTL/LTR is derived from the outer `document.documentElement.dir` natively.
+- Apply `useTranslation()` for sidebar navigation names, logout button, and topbar text.
+
+### [MODIFY] [src/components/features/settings/SettingsTabs.tsx](file:///d:/%D9%85%D8%B4%D8%B1%D9%88%D8%B9/14-2-2026/2026-2-13/smart_performance_system/client/src/components/features/settings/SettingsTabs.tsx)
+- Manage a local `pendingLanguage` state for the Language Select.
+- "Save Changes" button compares `pendingLanguage` with `i18n.language`.
+  - If different: call `i18n.changeLanguage(pendingLanguage)`, update `localStorage.setItem('app_lang', pendingLanguage)`, correctly update `dir`/`lang` on `document.documentElement`, and show a success indication.
+  - If same: no-op (or optional neutral toast).
+
+### [MODIFY] All Feature Pages and Shared Components
+- Wrap strings with [t('...')](file:///d:/%D9%85%D8%B4%D8%B1%D9%88%D8%B9/14-2-2026/2026-2-13/smart_performance_system/client/src/stores/business/turnover.store.ts#26-27) across pages, including placeholders and empty states.
+- List of core updates: `Login`, `DashboardHome`, [FiltersBar](file:///d:/%D9%85%D8%B4%D8%B1%D9%88%D8%B9/14-2-2026/2026-2-13/smart_performance_system/client/src/components/ui/data-display/FiltersBar.tsx#47-191), [DataTable](file:///d:/%D9%85%D8%B4%D8%B1%D9%88%D8%B9/14-2-2026/2026-2-13/smart_performance_system/client/src/components/ui/data-display/DataTable.tsx#52-178), [ExportButtons](file:///d:/%D9%85%D8%B4%D8%B1%D9%88%D8%B9/14-2-2026/2026-2-13/smart_performance_system/client/src/components/features/exports/ExportButtons.tsx#16-65), Action Drawers, and all 7 Core Dashboard Pages.
+
+## Verification Plan
+1. Check `localStorage` for `app_lang` key persistence.
+2. Verify switching language changes LTR/RTL immediately on Save.
+3. Validate sidebar and table alignment.
+4. Ensure no hardcoded strings remain by toggling between EN and AR.

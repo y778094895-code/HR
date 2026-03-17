@@ -1,0 +1,203 @@
+# Alerts Center — Implementation Plan
+
+## Goal
+
+Build the **Alerts Center** as a standalone case-centric signal hub at `/dashboard/alerts`. This replaces the current simple [AlertsList](file:///d:/%D9%85%D8%B4%D8%B1%D9%88%D8%B9/14-2-2026/2026-2-13/smart_performance_system/client/src/components/features/alerts/AlertsList.tsx#12-115)+[AlertDrawer](file:///d:/%D9%85%D8%B4%D8%B1%D9%88%D8%B9/14-2-2026/2026-2-13/smart_performance_system/client/src/components/features/alerts/AlertDrawer.tsx#16-146) with a full split-pane layout featuring: sticky filters, alert card list (left), details panel (right), bulk actions, CSV export, full lifecycle state machine, RBAC enforcement, audit logging, and keyboard shortcuts — all using **client-side data only** (no backend changes).
+
+---
+
+## Codebase Analysis Summary
+
+| Aspect | Finding |
+|--------|---------|
+| **Route** | `/dashboard/alerts` already registered in [App.tsx](file:///d:/%D9%85%D8%B4%D8%B1%D9%88%D8%B9/14-2-2026/2026-2-13/smart_performance_system/client/src/App.tsx) (line 96) |
+| **Nav** | [_nav.ts](file:///d:/%D9%85%D8%B4%D8%B1%D9%88%D8%B9/14-2-2026/2026-2-13/smart_performance_system/client/src/components/layout/_nav.ts) has alerts entry with children (all/unread/high/response) |
+| **Existing Store** | [alert.store.ts](file:///d:/%D9%85%D8%B4%D8%B1%D9%88%D8%B9/14-2-2026/2026-2-13/smart_performance_system/client/src/stores/business/alert.store.ts) — zustand+persist, 2 mock alerts, basic [SystemAlert](file:///d:/%D9%85%D8%B4%D8%B1%D9%88%D8%B9/14-2-2026/2026-2-13/smart_performance_system/client/src/stores/business/alert.store.ts#8-21) type, statuses: `unread/read/acknowledged/actioned` |
+| **Existing Components** | [AlertsList.tsx](file:///d:/%D9%85%D8%B4%D8%B1%D9%88%D8%B9/14-2-2026/2026-2-13/smart_performance_system/client/src/components/features/alerts/AlertsList.tsx) (DataTable-based), [AlertDrawer.tsx](file:///d:/%D9%85%D8%B4%D8%B1%D9%88%D8%B9/14-2-2026/2026-2-13/smart_performance_system/client/src/components/features/alerts/AlertDrawer.tsx) (SideDrawer with tabs) |
+| **Case Store** | [case.store.ts](file:///d:/%D9%85%D8%B4%D8%B1%D9%88%D8%B9/14-2-2026/2026-2-13/smart_performance_system/client/src/stores/business/case.store.ts) — [HRCase](file:///d:/%D9%85%D8%B4%D8%B1%D9%88%D8%B9/14-2-2026/2026-2-13/smart_performance_system/client/src/stores/business/case.store.ts#22-38) with [addCase](file:///d:/%D9%85%D8%B4%D8%B1%D9%88%D8%B9/14-2-2026/2026-2-13/smart_performance_system/client/src/stores/business/case.store.ts#71-85), `sourceAlertId` linking |
+| **Auth/RBAC** | Roles in code: `admin`, `manager`, `employee`, `super_admin`. [useAuth().role](file:///d:/%D9%85%D8%B4%D8%B1%D9%88%D8%B9/14-2-2026/2026-2-13/smart_performance_system/client/src/contexts/AuthContext.tsx#145-152), [hasRole()](file:///d:/%D9%85%D8%B4%D8%B1%D9%88%D8%B9/14-2-2026/2026-2-13/smart_performance_system/client/src/contexts/AuthContext.tsx#110-116), [ProtectedRoute](file:///d:/%D9%85%D8%B4%D8%B1%D9%88%D8%B9/14-2-2026/2026-2-13/smart_performance_system/client/src/components/shared/ProtectedRoute.tsx#10-36) |
+| **UI Primitives** | [DataTable](file:///d:/%D9%85%D8%B4%D8%B1%D9%88%D8%B9/14-2-2026/2026-2-13/smart_performance_system/client/src/components/ui/data-display/DataTable.tsx#53-181), [SideDrawer](file:///d:/%D9%85%D8%B4%D8%B1%D9%88%D8%B9/14-2-2026/2026-2-13/smart_performance_system/client/src/components/ui/overlays/SideDrawer.tsx#30-57), [TabsContainer](file:///d:/%D9%85%D8%B4%D8%B1%D9%88%D8%B9/14-2-2026/2026-2-13/smart_performance_system/client/src/components/ui/navigation/TabsContainer.tsx#26-87), `Badge`, [Button](file:///d:/%D9%85%D8%B4%D8%B1%D9%88%D8%B9/14-2-2026/2026-2-13/smart_performance_system/client/src/components/features/exports/ExportButtons.tsx#17-67), `Input`, `DropdownMenu`, `Sheet` |
+| **Export** | [ExportButtons.tsx](file:///d:/%D9%85%D8%B4%D8%B1%D9%88%D8%B9/14-2-2026/2026-2-13/smart_performance_system/client/src/components/features/exports/ExportButtons.tsx) (PDF/Excel pattern) |
+| **Toast** | [useToast](file:///d:/%D9%85%D8%B4%D8%B1%D9%88%D8%B9/14-2-2026/2026-2-13/smart_performance_system/client/src/hooks/use-toast.ts#171-190) hook |
+| **WebSocket** | [WebSocketService](file:///d:/%D9%85%D8%B4%D8%B1%D9%88%D8%B9/14-2-2026/2026-2-13/smart_performance_system/client/src/services/websocket.ts#5-65) exists but not connected to alerts |
+| **i18n** | [ar.json](file:///d:/%D9%85%D8%B4%D8%B1%D9%88%D8%B9/14-2-2026/2026-2-13/smart_performance_system/client/src/locales/ar.json) / [en.json](file:///d:/%D9%85%D8%B4%D8%B1%D9%88%D8%B9/14-2-2026/2026-2-13/smart_performance_system/client/src/locales/en.json) with `useTranslation` |
+| **CSS Themes** | CSS variables for light/dark/midnight/sand + accent colors |
+
+---
+
+## Role Mapping
+
+The spec references roles not in code. Mapping:
+
+| Spec Role | Code Role | Notes |
+|-----------|-----------|-------|
+| HR | `admin` | Full access |
+| Dept Manager | `manager` | Department-scoped |
+| Team Supervisor | `employee` | Team-scoped |
+| Executive | *(simulated via filter)* | Aggregate-only view — enforced in UI |
+| Data Analyst | *(simulated via filter)* | View-only, no actions |
+| System Admin | `super_admin` | Data Quality only |
+
+> [!IMPORTANT]
+> Since the project only has 4 roles (`admin`/`manager`/`employee`/`super_admin`), we map the 6 spec roles to these 4 and implement the closest permission set possible without inventing new roles.
+
+---
+
+## Proposed Changes
+
+### Types Layer
+
+#### [NEW] [alerts.ts](file:///d:/مشروع/14-2-2026/2026-2-13/smart_performance_system/client/src/types/alerts.ts)
+All alert type contracts per spec: [AlertSeverity](file:///d:/%D9%85%D8%B4%D8%B1%D9%88%D8%B9/14-2-2026/2026-2-13/smart_performance_system/client/src/stores/business/alert.store.ts#4-5), [AlertStatus](file:///d:/%D9%85%D8%B4%D8%B1%D9%88%D8%B9/14-2-2026/2026-2-13/smart_performance_system/client/src/stores/business/alert.store.ts#5-6), `AlertType`, [Alert](file:///d:/%D9%85%D8%B4%D8%B1%D9%88%D8%B9/14-2-2026/2026-2-13/smart_performance_system/client/src/stores/business/alert.store.ts#59-70), `AlertDetails`, `AlertDriver`, `AlertAuditEvent`, `AlertFilters`, and permission types.
+
+---
+
+### Data Layer
+
+#### [MODIFY] [alert.store.ts](file:///d:/مشروع/14-2-2026/2026-2-13/smart_performance_system/client/src/stores/business/alert.store.ts)
+Complete rewrite:
+- Expand [SystemAlert](file:///d:/%D9%85%D8%B4%D8%B1%D9%88%D8%B9/14-2-2026/2026-2-13/smart_performance_system/client/src/stores/business/alert.store.ts#8-21) → new [Alert](file:///d:/%D9%85%D8%B4%D8%B1%D9%88%D8%B9/14-2-2026/2026-2-13/smart_performance_system/client/src/stores/business/alert.store.ts#59-70) type from `types/alerts.ts`
+- Add full lifecycle: `NEW → ACKNOWLEDGED → ACTIONED → CLOSED → ARCHIVED`
+- Add audit trail (append-only log persisted to `alert_audit_v1`)
+- Add ~15 diverse mock alerts across all 5 types
+- Add actions: `acknowledge`, `assign`, `convertToCase`, [dismiss](file:///d:/%D9%85%D8%B4%D8%B1%D9%88%D8%B9/14-2-2026/2026-2-13/smart_performance_system/client/src/hooks/use-toast.ts#150-151), `escalate`, [close](file:///d:/%D9%85%D8%B4%D8%B1%D9%88%D8%B9/14-2-2026/2026-2-13/smart_performance_system/client/src/services/websocket.ts#33-39), `archive`, `markRead`, `markAllRead`, `bulkAcknowledge`, `bulkConvertToCase`
+- Add `getAlertDetails(id)` returning `AlertDetails` with XAI explanation mocks
+- Persist to `alerts_v1` localStorage key
+- Keep backward compat: old `smart-hr-alerts-storage` key will be superseded
+
+#### [NEW] [alerts.adapter.ts](file:///d:/مشروع/14-2-2026/2026-2-13/smart_performance_system/client/src/services/adapters/alerts.adapter.ts)
+- `AlertsDataAdapter` — generates alerts from mock data
+- `AlertsRepository` — wraps localStorage read/write with the `alerts_v1` / `alert_audit_v1` keys
+- Helper to generate alert ID, seed initial mock data, handle CSV export serialization
+
+---
+
+### RBAC Layer
+
+#### [NEW] [alerts-permissions.ts](file:///d:/مشروع/14-2-2026/2026-2-13/smart_performance_system/client/src/lib/alerts-permissions.ts)
+Exports:
+- `getAlertPermissions(role)` → `{ canView, canConvert, canDismiss, canEscalate, viewScope }`
+- `filterAlertsByRole(alerts, role, userDept?)` — enforces view scope
+- `isActionAllowed(role, action)` — per-action check
+
+---
+
+### UI Components
+
+#### [NEW] [AlertCard.tsx](file:///d:/مشروع/14-2-2026/2026-2-13/smart_performance_system/client/src/components/features/alerts/AlertCard.tsx)
+- Vertical card with severity color strip (left border for LTR, right for RTL)
+- Shows: title, employee/dept, risk%, trigger date, status badge
+- Quick actions menu (⋮)
+- Visual severity tints (critical=red, high=light-red, medium=amber, low=neutral)
+- Selected/unread/hover states
+- Checkbox for multi-select
+- Hover mini-preview popover
+
+#### [NEW] [AlertListPanel.tsx](file:///d:/مشروع/14-2-2026/2026-2-13/smart_performance_system/client/src/components/features/alerts/AlertListPanel.tsx)
+- Scrollable list of `AlertCard` components
+- Multi-select with shift+click range selection
+- Selection state management
+- Loading skeleton state
+- Empty state
+
+#### [NEW] [AlertDetailsPanel.tsx](file:///d:/مشروع/14-2-2026/2026-2-13/smart_performance_system/client/src/components/features/alerts/AlertDetailsPanel.tsx)
+5 required sections using [TabsContainer](file:///d:/%D9%85%D8%B4%D8%B1%D9%88%D8%B9/14-2-2026/2026-2-13/smart_performance_system/client/src/components/ui/navigation/TabsContainer.tsx#26-87):
+1. **Summary** — ID, severity, status, triggered by, timestamp, assigned to, read indicator
+2. **Signal Explanation (XAI)** — risk score, drivers, threshold, historical comparison
+3. **Suggested Action** — recommendation, estimated impact, risk reduction
+4. **Linked Entities** — employee profile link, department link, related cases
+5. **Action Controls** — Acknowledge, Assign Owner, Convert to Case, Dismiss, Escalate
+6. **Audit Trail** — immutable log of all state transitions
+
+Also handles: loading, no-selection, error states. RBAC-aware button visibility.
+
+#### [NEW] [AlertFilters.tsx](file:///d:/مشروع/14-2-2026/2026-2-13/smart_performance_system/client/src/components/features/alerts/AlertFilters.tsx)
+Sticky filter bar:
+- Severity filter (All/Critical/High/Medium/Low)
+- Type filter (Attrition/Performance/Fairness/DataQuality/Threshold)
+- Status filter (New/Acknowledged/Actioned/Closed/Archived)
+- Date range
+- Search (employee/department/alert ID)
+- Toggle: Only Unread
+- Sort: Newest/Highest Risk/Department
+- Bulk action buttons: Mark All Read, Bulk Acknowledge, Bulk Convert, Export CSV
+
+---
+
+### Page Layer
+
+#### [MODIFY] [AlertsPage.tsx](file:///d:/مشروع/14-2-2026/2026-2-13/smart_performance_system/client/src/pages/dashboard/AlertsPage.tsx)
+Complete rewrite — new split-pane layout:
+- `PageHeader` (existing)
+- Sticky `AlertFilters`
+- Split pane: `AlertListPanel` (left, ~40%) + `AlertDetailsPanel` (right, ~60%)
+- Bottom: bulk actions bar + pagination
+- Keyboard shortcuts: `A`=acknowledge, `C`=convert, `E`=escalate
+- CSV export utility function
+- RBAC-enforced UI
+
+#### [DELETE] [AlertsList.tsx](file:///d:/مشروع/14-2-2026/2026-2-13/smart_performance_system/client/src/components/features/alerts/AlertsList.tsx)
+Replaced by the new `AlertListPanel` + `AlertFilters`. The old DataTable-based list is superseded.
+
+#### [DELETE] [AlertDrawer.tsx](file:///d:/مشروع/14-2-2026/2026-2-13/smart_performance_system/client/src/components/features/alerts/AlertDrawer.tsx)
+Replaced by the inline `AlertDetailsPanel` (right pane). The old SideDrawer-based detail view is superseded.
+
+---
+
+### i18n
+
+#### [MODIFY] [ar.json](file:///d:/مشروع/14-2-2026/2026-2-13/smart_performance_system/client/src/locales/ar.json)
+Add `alerts.*` keys (severity labels, status labels, filter labels, action labels, section headers, etc.)
+
+#### [MODIFY] [en.json](file:///d:/مشروع/14-2-2026/2026-2-13/smart_performance_system/client/src/locales/en.json)
+Add matching `alerts.*` keys in English.
+
+---
+
+### Styles
+
+#### [NEW] [alerts-center.css](file:///d:/مشروع/14-2-2026/2026-2-13/smart_performance_system/client/src/styles/alerts-center.css)
+- Severity gradient system (critical/high/medium/low color strips + background tints)
+- Split-pane layout styles
+- Side panel slide animation
+- Micro-interactions (hover, focus)
+- Pill-style status badges
+- RTL-aware border placement
+
+---
+
+### Documentation
+
+#### [NEW] [alerts-center-changelog.md](file:///d:/مشروع/14-2-2026/2026-2-13/smart_performance_system/client/docs/alerts-center-changelog.md)
+Lists all added, modified, and removed files with reasons per spec requirements.
+
+---
+
+## Verification Plan
+
+### Automated Verification
+
+1. **Build check** — Run `npx tsc --noEmit` from `client/` to verify no TypeScript errors
+2. **Build production** — Run `npm run build` from `client/` to verify the project compiles cleanly
+
+### Browser Verification
+
+Using the browser tool to visually verify:
+
+1. Navigate to `/dashboard/alerts` — verify split-pane layout renders
+2. Click an alert card — verify details panel populates with all 5 sections
+3. Use severity filter — verify list filters correctly
+4. Click Acknowledge — verify status badge updates + audit trail entry
+5. Click Convert to Case — verify case created + alert marked as ACTIONED
+6. Verify RTL layout — borders/spacing/panes render correctly in Arabic
+7. Verify bulk select — check multiple cards + bulk acknowledge
+8. Export CSV — verify download triggers with filtered data
+
+### Manual Verification (by user)
+
+1. **Login with different roles** — verify RBAC permissions:
+   - `admin` user: sees all alerts, can convert/dismiss/escalate
+   - `manager` user: sees department alerts only, can convert/escalate but not dismiss
+   - `super_admin` user: sees only Data Quality alerts
+2. **Keyboard shortcuts** — select an alert, press `A`/`C`/`E` to verify actions
+3. **Persistence** — perform actions, refresh page, verify state persisted

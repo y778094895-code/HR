@@ -1,0 +1,33 @@
+# Implement Dashboard Profile Navigation
+
+## Goal Description
+Link the “الملف الشخصي” item in the topbar user dropdown to navigate to `/dashboard/profile` without modifying any backend endpoints. A new client-only profile page will be created to display the user's details.
+
+## Proposed Changes
+
+### Client Application
+#### [MODIFY] [DashboardLayout.tsx](file:///d:/%D9%85%D8%B4%D8%B1%D9%88%D8%B9/14-2-2026/2026-2-13/smart_performance_system/client/src/components/layout/DashboardLayout.tsx)
+- Update the `DropdownMenuItem` for "الملف الشخصي" to call `navigate('/dashboard/profile')`. By default, the `DropdownMenu` component in shadcn closes automatically when an item is selected.
+
+#### [NEW] [ProfilePage.tsx](file:///d:/%D9%85%D8%B4%D8%B1%D9%88%D8%B9/14-2-2026/2026-2-13/smart_performance_system/client/src/pages/dashboard/ProfilePage.tsx)
+- Create a new client-side route component `ProfilePage` that utilizes `useAuthStore` to fetch the current user's details.
+- Render a clean card layout displaying:
+  - Full Name
+  - Email
+  - Role
+  - Last Login (if present)
+- The UI will be titled "الملف الشخصي" (H1). Needs to be fully RTL compatible.
+
+#### [MODIFY] [App.tsx](file:///d:/%D9%85%D8%B4%D8%B1%D9%88%D8%B9/14-2-2026/2026-2-13/smart_performance_system/client/src/App.tsx)
+- Add the `/dashboard/profile` route under the existing `ProtectedRoute` structure inside the dashboard routes block.
+
+#### [NEW] [profile-navigation.md](file:///d:/%D9%85%D8%B4%D8%B1%D9%88%D8%B9/14-2-2026/2026-2-13/smart_performance_system/client/docs/profile-navigation.md)
+- Write documentation on the implementation of the profile navigation as requested by the user, noting modified files and the added routes.
+
+## Verification Plan
+
+### Manual Verification
+- Expand topbar user menu => click "الملف الشخصي" => verify navigation to `/dashboard/profile` and dropdown closing.
+- Verify `ProfilePage` displays accurate information from the auth store context.
+- Verify page back navigation returns correctly to the previous route.
+- Confirm no new endpoints were added by checking network tab.

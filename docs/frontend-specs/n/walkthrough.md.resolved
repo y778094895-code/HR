@@ -1,0 +1,54 @@
+# PR-02: API Services & Adapters — Walkthrough
+
+## Modified Files
+
+| # | File | Action | Key Change |
+|---|------|--------|------------|
+| 1 | [client.ts](file:///d:/%D9%85%D8%B4%D8%B1%D9%88%D8%B9/14-2-2026/2026-2-13/smart_performance_system/client/src/services/api/client.ts) | MODIFY | Structured [ApiClientError](file:///d:/%D9%85%D8%B4%D8%B1%D9%88%D8%B9/14-2-2026/2026-2-13/smart_performance_system/client/src/services/api/client.ts#9-15), 401 redirect, `D = unknown` |
+| 2 | [normalizers.ts](file:///d:/%D9%85%D8%B4%D8%B1%D9%88%D8%B9/14-2-2026/2026-2-13/smart_performance_system/client/src/services/api/normalizers.ts) | NEW | [snakeToCamel](file:///d:/%D9%85%D8%B4%D8%B1%D9%88%D8%B9/14-2-2026/2026-2-13/smart_performance_system/client/src/services/api/normalizers.ts#12-21) + `normalizeKeys<T>` utility |
+| 3 | [dashboardDataAdapter.ts](file:///d:/%D9%85%D8%B4%D8%B1%D9%88%D8%B9/14-2-2026/2026-2-13/smart_performance_system/client/src/services/adapters/dashboardDataAdapter.ts) | MODIFY | Migrated to `apiClient`, [normalizeKeys](file:///d:/%D9%85%D8%B4%D8%B1%D9%88%D8%B9/14-2-2026/2026-2-13/smart_performance_system/client/src/services/api/normalizers.ts#22-49), typed defaults |
+| 4 | [profileDataAdapter.ts](file:///d:/%D9%85%D8%B4%D8%B1%D9%88%D8%B9/14-2-2026/2026-2-13/smart_performance_system/client/src/services/resources/profileDataAdapter.ts) | MODIFY | `apiClient` + PR-01 types, [RiskDriver](file:///d:/%D9%85%D8%B4%D8%B1%D9%88%D8%B9/14-2-2026/2026-2-13/smart_performance_system/client/src/services/resources/profileDataAdapter.ts#26-30) = `RiskFactor & { direction? }` |
+| 5 | [fairness.service.ts](file:///d:/%D9%85%D8%B4%D8%B1%D9%88%D8%B9/14-2-2026/2026-2-13/smart_performance_system/client/src/services/resources/fairness.service.ts) | MODIFY | [normalizeKeys](file:///d:/%D9%85%D8%B4%D8%B1%D9%88%D8%B9/14-2-2026/2026-2-13/smart_performance_system/client/src/services/api/normalizers.ts#22-49) on all responses, `any` → `unknown` |
+| 6 | [performance.service.ts](file:///d:/%D9%85%D8%B4%D8%B1%D9%88%D8%B9/14-2-2026/2026-2-13/smart_performance_system/client/src/services/resources/performance.service.ts) | MODIFY | All snake_case → camelCase interfaces, [normalizeKeys](file:///d:/%D9%85%D8%B4%D8%B1%D9%88%D8%B9/14-2-2026/2026-2-13/smart_performance_system/client/src/services/api/normalizers.ts#22-49) |
+| 7 | [training.service.ts](file:///d:/%D9%85%D8%B4%D8%B1%D9%88%D8%B9/14-2-2026/2026-2-13/smart_performance_system/client/src/services/resources/training.service.ts) | MODIFY | All snake_case → camelCase interfaces, [normalizeKeys](file:///d:/%D9%85%D8%B4%D8%B1%D9%88%D8%B9/14-2-2026/2026-2-13/smart_performance_system/client/src/services/api/normalizers.ts#22-49) |
+| 8 | [PR-02-api-services-adapters.md](file:///d:/%D9%85%D8%B4%D8%B1%D9%88%D8%B9/14-2-2026/2026-2-13/smart_performance_system/docs/frontend-merge/PR-02-api-services-adapters.md) | NEW | Full normalization report |
+
+## Normalization Strategy
+
+```mermaid
+graph LR
+    A[Backend API] -->|snake_case response| B[apiClient.get]
+    B --> C[normalizeKeys❬T❭]
+    C -->|camelCase| D[Service / Adapter]
+    D -->|PR-01 types| E[Store / Component]
+```
+
+- **Single HTTP layer**: All in-scope files now use `apiClient` (Axios) exclusively
+- **Central normalizer**: `normalizeKeys<T>()` converts keys recursively at the transport boundary
+- **No-op safety**: If backend already returns camelCase, normalization changes nothing
+- **Query params to backend**: Remain snake_case where needed (e.g. `program_id`)
+
+## TypeScript Verification
+
+Initial typecheck revealed:
+1. [RiskDriver](file:///d:/%D9%85%D8%B4%D8%B1%D9%88%D8%B9/14-2-2026/2026-2-13/smart_performance_system/client/src/services/resources/profileDataAdapter.ts#26-30) was removed (imported by 3 components) → **Fixed**: re-exported as `RiskFactor & { direction? }`
+2. `Record<string, unknown>` broke `any`-consuming components → **Fixed**: restored `any` for bundle fields
+
+> [!NOTE]
+> User should run `npx tsc --noEmit` to verify full compilation.
+
+## Remaining Contract Risks
+
+| Risk | Severity | Mitigation |
+|------|----------|------------|
+| Backend may not return `direction` for risk factors | Low | Adapter infers from impact sign |
+| `GET /dashboard/stats` aggregated shape assumed | Medium | Adapter builds defaults for missing sections |
+| [lib/api.ts](file:///d:/%D9%85%D8%B4%D8%B1%D9%88%D8%B9/14-2-2026/2026-2-13/smart_performance_system/client/src/lib/api.ts) (fetch) still referenced by stores/components | Low | Out of PR-02 scope; cleanup in PR-03/04 |
+| localStorage timeline/cases in profileDataAdapter | Medium | Documented tech-debt for PR-04 backend migration |
+
+## Expected Impact on Future PRs
+
+| PR | Impact |
+|----|--------|
+| **PR-03** (stores) | Stores can now import services that return camelCase types directly. Store compatibility aliases in fairness.service are ready for store migration. |
+| **PR-04** (components/pages) | Components can stop using `any` from profile bundle — strict typing deferred here. localStorage persistence in profileDataAdapter can migrate to backend. [lib/api.ts](file:///d:/%D9%85%D8%B4%D8%B1%D9%88%D8%B9/14-2-2026/2026-2-13/smart_performance_system/client/src/lib/api.ts) dependents can switch to `apiClient`. |

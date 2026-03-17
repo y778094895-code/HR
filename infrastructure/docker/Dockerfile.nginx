@@ -1,0 +1,14 @@
+FROM nginx:alpine
+
+# نسخ nginx configuration
+COPY infrastructure/nginx/nginx.conf /etc/nginx/nginx.conf
+COPY infrastructure/nginx/conf.d/ /etc/nginx/conf.d/
+
+# إنشاء مجلدات SSL
+RUN mkdir -p /etc/nginx/ssl
+
+# المنافذ المكشوفة
+EXPOSE 80 443
+
+# الأمر الافتراضي
+CMD ["nginx", "-g", "daemon off;"]

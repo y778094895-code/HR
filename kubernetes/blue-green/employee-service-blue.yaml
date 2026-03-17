@@ -1,0 +1,58 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: employee-service-blue
+  namespace: smart-performance
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: employee-service
+      version: blue
+  template:
+    metadata:
+      labels:
+        app: employee-service
+        version: blue
+    spec:
+      containers:
+      - name: employee-service
+        image: smartperformance/employee-service:v1.0.0
+        ports:
+        - containerPort: 3000
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: employee-service-green
+  namespace: smart-performance
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: employee-service
+      version: green
+  template:
+    metadata:
+      labels:
+        app: employee-service
+        version: green
+    spec:
+      containers:
+      - name: employee-service
+        image: smartperformance/employee-service:v2.0.0
+        ports:
+        - containerPort: 3000
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: employee-service
+  namespace: smart-performance
+spec:
+  selector:
+    app: employee-service
+    version: blue  # Change to green to switch traffic
+  ports:
+  - port: 3000
+    targetPort: 3000

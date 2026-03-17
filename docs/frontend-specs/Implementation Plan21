@@ -1,0 +1,64 @@
+# Dashboard Pages Localization (Arabic RTL)
+
+## Goal Description
+The core pages (Performance, Attrition, Training, Fairness, Reports, Settings, Help) and their tabs structurally exist in the project, pulling in shared components correctly. However, they are entirely written in English.
+According to the **Smart HR System UI Specification**, the primary language must be Arabic (RTL). This plan translates the outer Page shell headers, descriptions, and tab titles for these 7 pages to match the provided spec exactly.
+
+## Proposed Changes
+
+### [MODIFY] `PerformancePage.tsx`
+- **Title:** الأداء (Performance Management)
+- **Description:** تتبع مؤشرات الأداء، إدارة التقييمات، وخطط التحسين.
+- **Tabs:** 
+  - Overview -> النظرة العامة
+  - Employees -> الموظفون
+  - Reviews -> التقييمات ("قريباً")
+
+### [MODIFY] `AttritionPage.tsx`
+- **Title:** الاستقالات وإدارة المخاطر (Attrition & Risk Management)
+- **Description:** تنبؤات المدخلات وتحديد مخاطر التسرب الوظيفي.
+- **Tabs:**
+  - Overview -> النظرة العامة
+  - Risk Analysis (XAI) -> تحليل المخاطر
+  - Intervention Log -> سجل التدخلات ("قريباً")
+
+### [MODIFY] `TrainingPage.tsx`
+- **Title:** التدريب والتطوير (Learning & Development)
+- **Description:** إدارة فجوات المهارات، طلبات التدريب، والعائد على الاستثمار.
+- **Tabs:**
+  - Skill Gaps -> فجوات المهارات
+  - Programs & Approval -> البرامج والاعتمادات
+  - Effectiveness & ROI -> الفعالية والعائد ("قريباً")
+
+### [MODIFY] `FairnessPage.tsx`
+- **Title:** تدقيق العدالة والمساواة (Fairness & Equity Audit)
+- **Description:** مراقبة التحيز، تحليل الفجوات، وتطبيق الإجراءات التصحيحية.
+- **Tabs:**
+  - Equity Overview -> نظرة عامة على المساواة
+  - Demographic Analysis -> التحليل الديموغرافي
+  - AI Recommendations -> توصيات الذكاء الاصطناعي
+
+### [MODIFY] `ReportsPage.tsx`
+- **Title:** التقارير والتحليلات (Reports & Analytics)
+- **Description:** إنشاء، جدولة، وتصدير الرؤى والبيانات.
+- **Tabs:**
+  - Quick Templates -> القوالب السريعة
+  - Custom Builder -> المُنشئ المخصص
+  - Download Center -> مركز التنزيل
+
+### [MODIFY] `SettingsPage.tsx`
+- **Title:** إعدادات النظام (System Settings)
+- **Description:** إدارة تفضيلات المؤسسة والتكوينات.
+*(Note: Inner tabs in `SettingsTabs.tsx` will also be translated)*
+
+### [MODIFY] `HelpPage.tsx`
+- **Title:** مركز المساعدة (Help Center)
+- **Description:** البحث عن إجابات، إدارة التذاكر، والتواصل مع الدعم.
+- **Tabs:**
+  - Knowledge Base -> قاعدة المعرفة
+  - My Tickets -> تذاكر الدعم
+  - Contact Support -> اتصل بالدعم (along with inner contact texts)
+
+## Verification Plan
+1. Check that the compiler does not emit any Typescript errors (`npm run build`).
+2. Verify files visually if requested.

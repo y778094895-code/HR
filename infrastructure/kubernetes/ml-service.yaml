@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ml-service
+  namespace: smart-hr
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ml-service
+  template:
+    metadata:
+      labels:
+        app: ml-service
+    spec:
+      containers:
+      - name: ml-service
+        image: smart-hr/ml-service:latest
+        ports:
+        - containerPort: 8000
+        env:
+        - name: RABBITMQ_URL
+          value: "amqp://rabbitmq:5672"
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "500m"
+          limits:
+            memory: "1Gi"
+            cpu: "2000m"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ml-service
+  namespace: smart-hr
+spec:
+  selector:
+    app: ml-service
+  ports:
+  - protocol: TCP
+    port: 8000
+    targetPort: 8000

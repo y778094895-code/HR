@@ -1,0 +1,55 @@
+# =========================
+# Stage 1: Builder
+# =========================
+FROM node:20-alpine AS builder
+WORKDIR /app
+
+# Native build tools needed for packages like bcrypt
+RUN apk add --no-cache python3 make g++
+
+# Improve npm reliability inside Docker
+RUN npm config set fetch-retries 5 \
+    && npm config set fetch-retry-mintimeout 20000 \
+    && npm config set fetch-retry-maxtimeout 120000
+
+# Copy dependency manifests
+COPY server/package*.json ./
+COPY shared/package*.json ./shared/
+
+# Install all deps (devDeps required for tsc build)
+RUN npm ci
+
+# Copy source
+COPY server/ .
+COPY shared/ ./shared/
+
+# Compile TypeScript -> dist/
+RUN npm run build
+
+
+# =========================
+# Stage 2: Production runner
+# =========================
+FROM node:20-alpine AS runner
+WORKDIR /app
+
+# Runtime tools + native build tools required for bcrypt re-install
+RUN apk add --no-cache curl python3 make g++
+
+# Install production deps only
+COPY --from=builder /app/package*.json ./
+RUN npm ci --omit=dev && npm cache clean --force
+
+# Copy compiled output
+COPY --from=builder /app/dist ./dist
+COPY --from=builder /app/shared ./shared
+
+# Run as non-root
+RUN addgroup -g 1001 -S nodejs \
+    && adduser -S nodejs -u 1001 \
+    && chown -R nodejs:nodejs /app
+USER nodejs
+
+EXPOSE 3000
+
+CMD ["node", "dist/api/index.js"]

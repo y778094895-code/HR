@@ -1,0 +1,24 @@
+# Walkthrough: Implementing App Routes & RBAC
+
+## Background
+The goal of this task was to update the application routing to enforce Role-Based Access Control (RBAC) securely on the client-side, making sure that employees, managers, and admins only see the paths and sidebar items they are authorized for.
+
+## Changes Made
+1. **Added Route Protectors ([App.tsx](file:///d:/%D9%85%D8%B4%D8%B1%D9%88%D8%B9/14-2-2026/2026-2-13/smart_performance_system/client/src/App.tsx))**
+   We wrapped several legacy routes with [ProtectedRoute](file:///d:/%D9%85%D8%B4%D8%B1%D9%88%D8%B9/14-2-2026/2026-2-13/smart_performance_system/client/src/components/shared/ProtectedRoute.tsx#10-36) matching the UI specification:
+   - `/dashboard/interventions` is now restricted to `admin` and `manager`.
+   - `/dashboard/vo-employees` is now restricted to `admin` and `manager`.
+   - `/dashboard/impact` is now restricted to `admin` and `manager`.
+   - Other routes (`performance`, `attrition`, `training`, `fairness`, `reports`, `users`) are correctly protected as defined in the Navigation Map spec.
+
+2. **Sidebar Navigation Filtering ([_nav.ts](file:///d:/%D9%85%D8%B4%D8%B1%D9%88%D8%B9/14-2-2026/2026-2-13/smart_performance_system/client/src/components/layout/_nav.ts))**
+   - Added `rolesAllowed` arrays to the original navigation items.
+   - Added all new routes required by the UI specification (e.g., `performance`, `attrition`, `training`, `fairness`, `reports`, `settings`, `help`) with Arabic labels (`label_ar`), appropriate Lucide icons, and role restrictions.
+   - The sidebar component uses [filterNavByRole](file:///d:/%D9%85%D8%B4%D8%B1%D9%88%D8%B9/14-2-2026/2026-2-13/smart_performance_system/client/src/components/layout/_nav.ts#109-122) to dynamically hide routes a user does not have permission for.
+
+3. **Compiler Issue Fixes**
+   - Fixed pre-existing TypeScript errors in [useFairnessAnalysis.ts](file:///d:/%D9%85%D8%B4%D8%B1%D9%88%D8%B9/14-2-2026/2026-2-13/smart_performance_system/client/src/components/features/fairness/hooks/useFairnessAnalysis.ts), [useInterventions.ts](file:///d:/%D9%85%D8%B4%D8%B1%D9%88%D8%B9/14-2-2026/2026-2-13/smart_performance_system/client/src/components/features/interventions/hooks/useInterventions.ts), [useTurnoverRisk.ts](file:///d:/%D9%85%D8%B4%D8%B1%D9%88%D8%B9/14-2-2026/2026-2-13/smart_performance_system/client/src/components/features/turnover/hooks/useTurnoverRisk.ts), and [turnover.store.ts](file:///d:/%D9%85%D8%B4%D8%B1%D9%88%D8%B9/14-2-2026/2026-2-13/smart_performance_system/client/src/stores/business/turnover.store.ts) that were preventing the project from building successfully.
+
+## Verification
+- Code has been fully typed and successfully passes `npm run build` with Vite/TSC.
+- Navigation definitions align *exactly* with the provided 3-navigation-map.md specification.

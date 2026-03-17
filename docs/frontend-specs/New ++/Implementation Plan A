@@ -1,0 +1,52 @@
+# Sidebar Accordion & Sub-Route Pages Implementation Plan
+
+## Goal Description
+The objective is to ensure the Sidebar operates as a "Single-Open" Accordion, and that every sub-item link navigates to a dedicated page (Module Hub) that displays the sub-item's name as the page title (`H1`) and specific tabs using the `TabsContainer`. The Sidebar accordion behavior is mostly already implemented in `DashboardLayout.tsx`.
+
+## Proposed Changes
+
+### 1. Verification of Part A (Sidebar Behavior Fix)
+* **File:** `client/src/components/layout/DashboardLayout.tsx`
+* **Analysis:** The component already uses a single `activeSectionKey` persisted in `localStorage` under `sidebar_active_section_v1`. It collapses others when one expands, auto-expands based on route, and closes the mobile drawer on sub-item click. 
+* **Action:** No structural changes needed. I will just verify its behavior against the acceptances tests.
+
+### 2. Implementation of Module Hubs (Part B & C)
+We will refactor each major route's page component to act as a **Module Hub**. 
+
+For each page, we will:
+1. Extract the `view` search param (e.g. `?view=continuous`).
+2. Map the `view` to the correct **Page Title** (H1) and the corresponding **Array of Tabs** specified in the requirements.
+3. Update `TabsContainer` to use `syncWithUrl="tab"` (instead of `view`) so we can deep-link to tabs without destroying the `view` parameter.
+4. If a tab's underlying component doesn't exist, we will implement it gracefully with a placeholder `div` (e.g. "Coming Soon") or reuse existing components when appropriate.
+
+#### Files to Update (Module Hubs)
+#### [MODIFY] `DashboardHome.tsx` (Dashboard)
+#### [MODIFY] `AlertsPage.tsx` (Alerts Center)
+#### [MODIFY] `EmployeesPage.tsx` (Employees)
+#### [MODIFY] `PerformancePage.tsx` (Performance Intelligence)
+#### [MODIFY] `AttritionPage.tsx` (Attrition & Turnover)
+#### [MODIFY] `TrainingPage.tsx` (Training Needs)
+#### [MODIFY] `FairnessPage.tsx` (Fairness Monitoring)
+#### [MODIFY] `RecommendationsPage.tsx` (Recommendations & What-if)
+#### [MODIFY] `CasesPage.tsx` (Case Management)
+#### [MODIFY] `ImpactPage.tsx` (Impact Analysis)
+#### [MODIFY] `ReportsPage.tsx` (Reports & Exports)
+#### [MODIFY] `DataQualityPage.tsx` (Data Quality)
+#### [MODIFY] `UserManagementContainer.tsx` (Users & Permissions)
+#### [MODIFY] `SettingsPage.tsx` (Settings)
+#### [MODIFY] `HelpPage.tsx` (Help)
+
+### 3. Implementation Documentation (Part E)
+#### [NEW] `docs/sidebar-accordion-subpages.md`
+* Create this markdown file to document the Sidebar behavior (single-open accordion + persistence), the mapping table of main sections to sub-items and deep links, and the list of modified files.
+
+## Verification Plan
+
+### Automated/Unit Tests
+* Standard TypeScript compilation check (`npm run build`).
+
+### Manual Verification
+* **AT-Accordion-01 & 02:** Click main items in Sidebar and verify only one stays open; click sub-items and verify H1 update.
+* **AT-SubPages-01:** Navigate through randomly selected sub-items across modules (e.g., Performance -> KPIs, Alerts -> High Severity) and verify the tabs change completely to match the requirement.
+* **AT-URLSync-01:** Navigate to a sub-item, switch tab, reload page -> verify it restores the same sub-item and tab.
+* **AT-RBAC-01 & AT-RTL-01:** Toggle Arabic RTL layout and verify chevrons rotate correctly. Impersonate a regular user to verify restricted tabs disappear.

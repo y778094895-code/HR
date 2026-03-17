@@ -1,0 +1,47 @@
+# PR-02: API Services & Adapters — Walkthrough
+
+## What Changed
+
+Added [normalizeKeys](file:///d:/%D9%85%D8%B4%D8%B1%D9%88%D8%B9/14-2-2026/2026-2-13/smart_performance_system/client/src/services/api/normalizers.ts#22-49) (snake_case → camelCase) at the transport boundary for **8 service files** that were missing it:
+
+| File | Key Changes |
+|------|-------------|
+| [fairness.service.ts](file:///d:/%D9%85%D8%B4%D8%B1%D9%88%D8%B9/14-2-2026/2026-2-13/smart_performance_system/client/src/services/resources/fairness.service.ts) | All 6 methods now normalize responses |
+| [dashboard.service.ts](file:///d:/%D9%85%D8%B4%D8%B1%D9%88%D8%B9/14-2-2026/2026-2-13/smart_performance_system/client/src/services/resources/dashboard.service.ts) | 3 methods normalized; cache stores normalized data |
+| [turnover.service.ts](file:///d:/%D9%85%D8%B4%D8%B1%D9%88%D8%B9/14-2-2026/2026-2-13/smart_performance_system/client/src/services/resources/turnover.service.ts) | 3 interface fields → camelCase + all responses normalized |
+| [employee.service.ts](file:///d:/%D9%85%D8%B4%D8%B1%D9%88%D8%B9/14-2-2026/2026-2-13/smart_performance_system/client/src/services/resources/employee.service.ts) | All GET/POST/PUT responses normalized |
+| [intervention.service.ts](file:///d:/%D9%85%D8%B4%D8%B1%D9%88%D8%B9/14-2-2026/2026-2-13/smart_performance_system/client/src/services/resources/intervention.service.ts) | GET responses normalized; void POST/PATCH unchanged |
+| [reports.service.ts](file:///d:/%D9%85%D8%B4%D8%B1%D9%88%D8%B9/14-2-2026/2026-2-13/smart_performance_system/client/src/services/resources/reports.service.ts) | `required_params` → `requiredParams`, renamed [ReportTemplate](file:///d:/%D9%85%D8%B4%D8%B1%D9%88%D8%B9/14-2-2026/2026-2-13/smart_performance_system/client/src/types/reports.ts#6-14) → [ReportTemplateSummary](file:///d:/%D9%85%D8%B4%D8%B1%D9%88%D8%B9/14-2-2026/2026-2-13/smart_performance_system/client/src/services/resources/reports.service.ts#15-22) |
+| [auth.service.ts](file:///d:/%D9%85%D8%B4%D8%B1%D9%88%D8%B9/14-2-2026/2026-2-13/smart_performance_system/client/src/services/resources/auth.service.ts) | [getCurrentUser](file:///d:/%D9%85%D8%B4%D8%B1%D9%88%D8%B9/14-2-2026/2026-2-13/smart_performance_system/client/src/services/resources/auth.service.ts#51-55) normalized; login/register inline probing kept |
+| [user.service.ts](file:///d:/%D9%85%D8%B4%D8%B1%D9%88%D8%B9/14-2-2026/2026-2-13/smart_performance_system/client/src/services/resources/user.service.ts) | All GET/POST/PUT responses normalized |
+
+### Barrel Update
+
+[index.ts](file:///d:/%D9%85%D8%B4%D8%B1%D9%88%D8%B9/14-2-2026/2026-2-13/smart_performance_system/client/src/services/resources/index.ts) now also exports `employee.service` and `user.service`.
+
+### Name Clash Fix
+
+[ReportTemplate](file:///d:/%D9%85%D8%B4%D8%B1%D9%88%D8%B9/14-2-2026/2026-2-13/smart_performance_system/client/src/types/reports.ts#6-14) in [reports.service.ts](file:///d:/%D9%85%D8%B4%D8%B1%D9%88%D8%B9/14-2-2026/2026-2-13/smart_performance_system/client/src/services/resources/reports.service.ts) renamed to [ReportTemplateSummary](file:///d:/%D9%85%D8%B4%D8%B1%D9%88%D8%B9/14-2-2026/2026-2-13/smart_performance_system/client/src/services/resources/reports.service.ts#15-22) to avoid conflict with the canonical [ReportTemplate](file:///d:/%D9%85%D8%B4%D8%B1%D9%88%D8%B9/14-2-2026/2026-2-13/smart_performance_system/client/src/types/reports.ts#6-14) in [types/reports.ts](file:///d:/%D9%85%D8%B4%D8%B1%D9%88%D8%B9/14-2-2026/2026-2-13/smart_performance_system/client/src/types/reports.ts) (which describes the template JSON structure with sections/filters/layout).
+
+## Pattern Applied
+
+Every service method that reads data from the API now follows:
+
+```typescript
+const raw = await apiClient.get<unknown>('/endpoint');
+return normalizeKeys<TargetType>(raw);
+```
+
+## Not Touched
+
+- [lib/api.ts](file:///d:/%D9%85%D8%B4%D8%B1%D9%88%D8%B9/14-2-2026/2026-2-13/smart_performance_system/client/src/lib/api.ts) (fetch-based) — 10+ consumers in stores/components/hooks
+- Pages, stores, components, config, routing
+- Backend, infrastructure, deployment
+
+## Verification Needed
+
+```powershell
+cd d:\مشروع\14-2-2026\2026-2-13\smart_performance_system\client
+npx tsc --noEmit        # typecheck
+npx vitest run          # unit tests
+```

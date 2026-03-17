@@ -1,0 +1,11 @@
+- [ ] Standardize canonical API response envelope and shared error shape
+- [ ] Add correlation/request id middleware and propagate in responses
+- [ ] Add robust query normalization for pagination/filter/sort/search
+- [ ] Harden global error middleware for consistent 4xx/5xx behavior
+- [ ] Stabilize auth/me/session flow and add foundational RBAC guard middleware
+- [ ] Add audit logging service and wire sensitive auth/alert actions
+- [ ] Ensure realtime alert events delivery (alert:new, alert:updated, alert:deleted) with graceful fallback
+- [ ] Add safe foundation migration for missing tables only (sessions/audit_logs/outbox/alert action read tracking)
+- [ ] Create Phase A backend delivery document
+- [ ] Run backend typecheck/build and cheap backend tests
+- [ ] Update this TODO after each completed step
