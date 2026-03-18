@@ -24,3 +24,5 @@ export * from './attendance.schema';
 export * from './interventions.schema';
 export * from './salary.schema';
 export * from './notifications.schema';
+export * from './goals.schema';
+export * from './reviews.schema';

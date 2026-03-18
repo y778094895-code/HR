@@ -1,0 +1,17 @@
+{
+    "title": "مخاطر الاستقالة",
+    "riskScore": "درجة الخطر",
+    "riskBand": "مستوى الخطر",
+    "predictedAt": "تاريخ التنبؤ",
+    "refreshPrediction": "تحديث التنبؤ",
+    "bands": { "low": "منخفض", "medium": "متوسط", "high": "مرتفع", "critical": "حرج" },
+    "features": "محركات الخطر",
+    "featureImpact": "التأثير",
+    "increases": "يزيد من خطر المغادرة",
+    "reduces": "يقلل من خطر المغادرة",
+    "heatmap": "خريطة حرارة المخاطر",
+    "history": "تاريخ المخاطر",
+    "batchPredict": "تشغيل التنبؤ الجماعي",
+    "batchQueued": "تم تحديد التنبؤ الجماعي",
+    "confidence": "مستوى الثقة"
+}

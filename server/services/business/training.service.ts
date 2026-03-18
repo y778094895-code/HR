@@ -1,5 +1,6 @@
 import { injectable, inject } from 'inversify';
 import { ITrainingService } from '../interfaces/i-training.service';
+import { TRAINING_CATEGORIES } from './training-categories';
 import { db } from '../../data/database/connection';
 import { trainingNeedPredictions, trainingEnrollments, trainingPrograms } from '../../data/models/training.schema';
 import { recommendations } from '../../data/models/interventions.schema';

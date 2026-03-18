@@ -1,14 +1,14 @@
 
 from fastapi import FastAPI
-from .controllers.prediction.controller import router as prediction_router
-from .controllers.recommendation.controller import router as recommendation_router
-# from .controllers.fairness.controller import router as fairness_router # Implement if needed
+from .controllers.prediction_controller import router as prediction_router
+from .controllers.recommendation_controller import router as recommendation_router
+from .controllers.fairness_controller import router as fairness_router
 
 app = FastAPI(title="Smart HR Performance System - ML Service")
 
 app.include_router(prediction_router)
 app.include_router(recommendation_router)
-# app.include_router(fairness_router)
+app.include_router(fairness_router)
 
 @app.get("/health")
 def health_check():

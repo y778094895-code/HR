@@ -1,0 +1,30 @@
+{
+    "title": "Performance Reviews",
+    "myTasks": "My Review Tasks",
+    "cycleManagement": "Cycle Management",
+    "templates": "Review Templates",
+    "newCycle": "New Cycle",
+    "launchCycle": "Launch Cycle",
+    "closeCycle": "Close Cycle",
+    "calibration": "In Calibration",
+    "assignReviewer": "Assign Reviewer",
+    "submitReview": "Submit Review",
+    "saveDraft": "Save Draft",
+    "lockReview": "Lock Review",
+    "acknowledge": "Acknowledge",
+    "compositeScore": "Composite Score",
+    "goalAttainment": "Goal Attainment",
+    "selfReview": "Self Review",
+    "managerReview": "Manager Review",
+    "peerReview": "Peer Review",
+    "cycleType": { "annual": "Annual", "mid_year": "Mid-Year", "quarterly": "Quarterly", "probation": "Probation" },
+    "cycleStatus": { "draft": "Draft", "active": "Active", "calibration": "Calibration", "closed": "Closed" },
+    "participantStatus": { "pending": "Pending", "in_progress": "In Progress", "submitted": "Submitted", "overdue": "Overdue" },
+    "reviewStatus": { "draft": "Draft", "submitted": "Submitted", "locked": "Locked", "acknowledged": "Acknowledged" },
+    "report": {
+        "title": "Review Report",
+        "aggregatedScores": "Aggregated Scores",
+        "peerCommentsHidden": "Peer comments are anonymised",
+        "noSubmittedReviews": "No submitted reviews found"
+    }
+}

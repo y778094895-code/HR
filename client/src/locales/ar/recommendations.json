@@ -1,0 +1,24 @@
+{
+    "title": "التوصيات",
+    "generate": "توليد التوصيات",
+    "action": "اتخاذ إجراء",
+    "dismiss": "رفض",
+    "actioned": "تم التنفيذ",
+    "dismissed": "مرفوض",
+    "source": { "ml": "مولَّد بالذكاء الاصطناعي", "rule_based": "قائم على القواعد" },
+    "type": {
+        "retention": "الاحتفاظ",
+        "compensation": "التعويض",
+        "development": "التطوير",
+        "performance": "الأداء"
+    },
+    "confidence": "مستوى الثقة",
+    "rationale": "المبرر",
+    "training": {
+        "title": "مقترحات التدريب",
+        "enroll": "التسجيل",
+        "category": "الفئة",
+        "gap": "فجوة المهارة",
+        "gapScore": "درجة الفجوة"
+    }
+}

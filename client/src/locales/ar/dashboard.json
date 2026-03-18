@@ -1,0 +1,13 @@
+{
+    "kpis": "مؤشرات الأداء الرئيسية",
+    "riskDistribution": "توزيع المخاطر حسب القسم",
+    "goalCompletion": "معدل إتمام الأهداف",
+    "equityMetrics": "مقاييس المساواة",
+    "genderPayGap": "فجوة الرواتب بين الجنسين",
+    "ratingGap": "فجوة التقييم",
+    "suppressed": "محجوب (ن < 5)",
+    "export": "تصدير",
+    "csv": "CSV",
+    "xlsx": "Excel",
+    "scope": { "employee": "لوحتي", "manager": "لوحة الفريق", "hr": "لوحة الموارد البشرية", "admin": "لوحة المشرف" }
+}

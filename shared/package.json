@@ -1,6 +1,12 @@
 {
     "name": "@smart-hr/shared",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "private": true,
-    "main": "index.js"
+    "main": "index.js",
+    "types": "types/index.ts",
+    "exports": {
+        ".": "./index.js",
+        "./types": "./types/index.ts",
+        "./xai": "./xai/feature_labels.json"
+    }
 }

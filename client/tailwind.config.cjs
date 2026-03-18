@@ -1,4 +1,7 @@
 /** @type {import('tailwindcss').Config} */
+// RTL support: Tailwind v3.4+ has built-in `rtl:` and `ltr:` variant modifiers
+// and logical-property utilities (ps-, pe-, ms-, me-, start-, end-).
+// No additional plugin required — toggling `<html dir="rtl">` activates all RTL variants.
 module.exports = {
     darkMode: ['variant', '&:is([data-theme="dark"] *)', '&:is([data-theme="midnight"] *)'],
     content: [

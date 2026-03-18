@@ -1,0 +1,17 @@
+{
+    "title": "Attrition Risk",
+    "riskScore": "Risk Score",
+    "riskBand": "Risk Band",
+    "predictedAt": "Predicted At",
+    "refreshPrediction": "Refresh Prediction",
+    "bands": { "low": "Low", "medium": "Medium", "high": "High", "critical": "Critical" },
+    "features": "Risk Drivers",
+    "featureImpact": "Impact",
+    "increases": "increases turnover risk",
+    "reduces": "reduces turnover risk",
+    "heatmap": "Risk Heatmap",
+    "history": "Risk History",
+    "batchPredict": "Run Batch Prediction",
+    "batchQueued": "Batch prediction queued",
+    "confidence": "Confidence"
+}

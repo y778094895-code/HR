@@ -39,9 +39,21 @@ export class MLServiceClient implements IMLServiceClient {
         try {
             const response = await axios.post(`${this.baseUrl}/predictions/turnover`, {
                 employee_id: employeeId,
-                features: features || {}
+                features: features || {},
             });
-            return response.data;
+            // Map TurnoverPredictionResponse → internal format
+            const d = response.data;
+            return {
+                employeeId: d.employee_id ?? employeeId,
+                riskScore: d.risk_score,
+                riskLevel: d.band ?? d.risk_level,
+                confidenceScore: d.confidence ?? 0.85,
+                factors: d.shap_values
+                    ? Object.fromEntries(d.shap_values.map((f: any) => [f.feature, f.impact]))
+                    : {},
+                shapValues: d.shap_values ?? [],
+                modelVersion: d.model_version,
+            };
         } catch (error: any) {
             console.error(`ML Service Error on predictTurnover:`, error.message);
             // Fallback mock
@@ -91,6 +103,14 @@ export class MLServiceClient implements IMLServiceClient {
                 predictions[id] = { riskScore: Math.random() * 0.5 + 0.1, factors: ['tenure'] };
             }
             return predictions;
+        }
+    }
+
+    async requestBatchPrediction(opts: { batchId: string; departmentId?: string; staleOnly?: boolean }): Promise<void> {
+        try {
+            await axios.post(`${this.baseUrl}/predictions/batch/queue`, opts);
+        } catch (error: any) {
+            console.warn(`ML Service batch queue unavailable: ${error.message}`);
         }
     }
 

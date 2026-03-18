@@ -1,0 +1,41 @@
+{
+    "title": "Goals & KPIs",
+    "myGoals": "My Goals",
+    "teamGoals": "Team Goals",
+    "objectives": "Objectives",
+    "addGoal": "Add Goal",
+    "editGoal": "Edit Goal",
+    "archiveGoal": "Archive Goal",
+    "weight": "Weight (%)",
+    "weightHint": "Total weight across all goals must not exceed 100%",
+    "weightExceeded": "Total goal weight would exceed 100%",
+    "category": "Category",
+    "dueDate": "Due Date",
+    "targetValue": "Target Value",
+    "currentValue": "Current Value",
+    "unit": "Unit",
+    "status": {
+        "draft": "Draft",
+        "in_progress": "In Progress",
+        "completed": "Completed",
+        "overdue": "Overdue",
+        "archived": "Archived"
+    },
+    "kpi": {
+        "title": "KPIs",
+        "addKpi": "Add KPI",
+        "frequency": "Measurement Frequency",
+        "daily": "Daily",
+        "weekly": "Weekly",
+        "monthly": "Monthly",
+        "progress": "Progress"
+    },
+    "objective": {
+        "title": "Organizational Objective",
+        "cascade": "Cascade to Departments",
+        "cascaded": "Cascaded",
+        "owner": "Owner",
+        "targetDate": "Target Date",
+        "status": { "active": "Active", "closed": "Closed" }
+    }
+}

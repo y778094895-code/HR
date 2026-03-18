@@ -1,0 +1,108 @@
+{
+    "common": {
+        "loading": "Loading...",
+        "saveChanges": "Save Changes",
+        "logout": "Logout",
+        "search": "Search...",
+        "searchPlaceholder": "Search...",
+        "reset": "Reset",
+        "exporting": "Exporting...",
+        "pdf": "PDF",
+        "excel": "Excel",
+        "noData": "No data available",
+        "comingSoon": "Coming Soon",
+        "department": "Department",
+        "status": "Status",
+        "period": "Period",
+        "select": "Select",
+        "active": "Active",
+        "inactive": "Inactive",
+        "pending": "Pending",
+        "engineering": "Engineering",
+        "sales": "Sales",
+        "marketing": "Marketing",
+        "hr": "HR",
+        "product": "Product",
+        "view": "View",
+        "edit": "Edit",
+        "delete": "Delete",
+        "actions": "Actions",
+        "all": "All"
+    },
+    "nav": {
+        "dashboard": "Dashboard",
+        "alerts": "Alerts Center",
+        "cases": "Case Management",
+        "employees": "Employees",
+        "performance": "Performance",
+        "attrition": "Attrition",
+        "training": "Training",
+        "fairness": "Fairness",
+        "recommendations": "Recommendations",
+        "impact": "Impact Analysis",
+        "reports": "Reports",
+        "dataQuality": "Data Quality",
+        "users": "User Management",
+        "settings": "Settings",
+        "help": "Help Center"
+    },
+    "auth": {
+        "login": "Login",
+        "email": "Email",
+        "password": "Password",
+        "loggingIn": "Logging in...",
+        "failed": "Login failed",
+        "defaultCredentials": "Use admin@smart-hr.com / Admin@123"
+    },
+    "dashboard": {
+        "title": "Smart HR",
+        "welcome": "Welcome back",
+        "totalEmployees": "Total Employees",
+        "highRiskAttrition": "High Risk Attrition",
+        "trainingCompletion": "Training Completion",
+        "averagePerformance": "Average Performance",
+        "performanceTrends": "Performance Trends",
+        "recentActivity": "Recent Activity"
+    },
+    "performance": {
+        "title": "Performance Management",
+        "description": "Monitor KPIs, manage evaluations, and track improvement plans.",
+        "tabs": { "overview": "Overview", "employees": "Employees", "reviews": "Reviews" }
+    },
+    "attrition": {
+        "title": "Attrition & Risk Management",
+        "description": "AI-powered turnover prediction and proactive intervention strategies.",
+        "tabs": { "overview": "Overview", "riskAnalysis": "Risk Analysis (XAI)", "interventions": "Intervention Log" }
+    },
+    "training": {
+        "title": "Learning & Development",
+        "description": "Manage skill gaps, approve training requests, and measure ROI.",
+        "tabs": { "skillGaps": "Skill Gaps", "programs": "Programs & Approval", "effectiveness": "Effectiveness & ROI" }
+    },
+    "fairness": {
+        "title": "Fairness & Equity Audit",
+        "description": "Monitor bias, analyze disparities, and implement corrective actions.",
+        "tabs": { "overview": "Equity Overview", "demographics": "Demographic Analysis", "recommendations": "AI Recommendations" }
+    },
+    "reports": {
+        "title": "Reports & Analytics",
+        "description": "Generate, schedule, and export system insights.",
+        "tabs": { "templates": "Quick Templates", "builder": "Custom Builder", "downloads": "Download Center" }
+    },
+    "settings": {
+        "title": "System Settings",
+        "description": "Manage your organization preferences and configurations.",
+        "tabs": { "general": "General", "users": "Users", "permissions": "Permissions", "integrations": "Integrations", "security": "Security", "appearance": "Appearance" },
+        "general": { "companyName": "Company Name", "language": "Language", "english": "English (US)", "arabic": "Arabic (SA)" }
+    },
+    "alerts": {
+        "pageTitle": "Alerts Center",
+        "pageDescription": "Manage and track alerts, converting them into actionable cases",
+        "noAlerts": "No alerts match the current filters",
+        "acknowledge": "Acknowledge",
+        "dismiss": "Dismiss",
+        "escalate": "Escalate",
+        "markAllRead": "Mark All as Read",
+        "exportCSV": "Export CSV"
+    }
+}

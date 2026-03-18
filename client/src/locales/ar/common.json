@@ -1,0 +1,108 @@
+{
+    "common": {
+        "loading": "جاري التحميل...",
+        "saveChanges": "حفظ التغييرات",
+        "logout": "تسجيل الخروج",
+        "search": "بحث...",
+        "searchPlaceholder": "بحث...",
+        "reset": "إعادة ضبط",
+        "exporting": "جاري التصدير...",
+        "pdf": "PDF",
+        "excel": "Excel",
+        "noData": "لا توجد بيانات متاحة",
+        "comingSoon": "قريباً",
+        "department": "القسم",
+        "status": "الحالة",
+        "period": "الفترة الزمنية",
+        "select": "اختر",
+        "active": "نشط",
+        "inactive": "غير نشط",
+        "pending": "قيد الانتظار",
+        "engineering": "الهندسة",
+        "sales": "المبيعات",
+        "marketing": "التسويق",
+        "hr": "الموارد البشرية",
+        "product": "المنتج",
+        "view": "عرض",
+        "edit": "تعديل",
+        "delete": "حذف",
+        "actions": "إجراءات",
+        "all": "الكل"
+    },
+    "nav": {
+        "dashboard": "لوحة التحكم",
+        "alerts": "مركز التنبيهات",
+        "cases": "الحالات والتدخلات",
+        "employees": "الموظفين",
+        "performance": "الأداء",
+        "attrition": "الاستقالات",
+        "training": "التدريب",
+        "fairness": "العدالة",
+        "recommendations": "التوصيات والمحاكاة",
+        "impact": "تحليل الأثر",
+        "reports": "التقارير",
+        "dataQuality": "جودة البيانات",
+        "users": "إدارة المستخدمين",
+        "settings": "الإعدادات",
+        "help": "المساعدة"
+    },
+    "auth": {
+        "login": "تسجيل الدخول",
+        "email": "البريد الإلكتروني",
+        "password": "كلمة المرور",
+        "loggingIn": "جاري تسجيل الدخول...",
+        "failed": "فشل تسجيل الدخول",
+        "defaultCredentials": "استخدم admin@smart-hr.com / Admin@123"
+    },
+    "dashboard": {
+        "title": "النظام الذكي",
+        "welcome": "مرحباً بعودتك",
+        "totalEmployees": "إجمالي الموظفين",
+        "highRiskAttrition": "الاستقالات عالية الخطورة",
+        "trainingCompletion": "إكمال التدريب",
+        "averagePerformance": "متوسط الأداء",
+        "performanceTrends": "اتجاهات الأداء",
+        "recentActivity": "النشاط الأخير"
+    },
+    "performance": {
+        "title": "الأداء",
+        "description": "تتبع مؤشرات الأداء، إدارة التقييمات، وخطط التحسين.",
+        "tabs": { "overview": "النظرة العامة", "employees": "الموظفون", "reviews": "التقييمات" }
+    },
+    "attrition": {
+        "title": "الاستقالات وإدارة المخاطر",
+        "description": "تنبؤات المدخلات وتحديد مخاطر التسرب الوظيفي.",
+        "tabs": { "overview": "النظرة العامة", "riskAnalysis": "تحليل المخاطر", "interventions": "سجل التدخلات" }
+    },
+    "training": {
+        "title": "التدريب والتطوير",
+        "description": "إدارة فجوات المهارات، طلبات التدريب، والعائد على الاستثمار.",
+        "tabs": { "skillGaps": "فجوات المهارات", "programs": "البرامج والاعتمادات", "effectiveness": "الفعالية والعائد" }
+    },
+    "fairness": {
+        "title": "تدقيق العدالة والمساواة",
+        "description": "مراقبة التحيز، تحليل الفجوات، وتطبيق الإجراءات التصحيحية.",
+        "tabs": { "overview": "نظرة عامة على المساواة", "demographics": "التحليل الديموغرافي", "recommendations": "توصيات الذكاء الاصطناعي" }
+    },
+    "reports": {
+        "title": "التقارير والتحليلات",
+        "description": "إنشاء، جدولة، وتصدير الرؤى والبيانات.",
+        "tabs": { "templates": "القوالب السريعة", "builder": "المُنشئ المخصص", "downloads": "مركز التنزيل" }
+    },
+    "settings": {
+        "title": "إعدادات النظام",
+        "description": "إدارة تفضيلات المؤسسة والتكوينات.",
+        "tabs": { "general": "عام", "users": "المستخدمون", "permissions": "الصلاحيات", "integrations": "التكاملات", "security": "الأمان", "appearance": "المظهر" },
+        "general": { "companyName": "اسم الشركة", "language": "اللغة", "english": "English (US)", "arabic": "العربية (SA)" }
+    },
+    "alerts": {
+        "pageTitle": "مركز التنبيهات",
+        "pageDescription": "إدارة وتتبع التنبيهات وتحويلها إلى حالات عمل قابلة للتنفيذ",
+        "noAlerts": "لا توجد تنبيهات تطابق معايير البحث",
+        "acknowledge": "استلام",
+        "dismiss": "رفض",
+        "escalate": "تصعيد",
+        "markAllRead": "تحديد الكل كمقروء",
+        "exportCSV": "تصدير CSV"
+    }
+}

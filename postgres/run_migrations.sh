@@ -72,7 +72,12 @@ run_sql "$MIG_DIR/0017_ui_dashboards_v2.sql"
 run_sql "$MIG_DIR/0018_ai_layer_views.sql"
 run_sql "$MIG_DIR/0019_alerts_center_details.sql"
 run_sql "$MIG_DIR/0020_phase_f_help_mfa.sql"
-
+run_sql "$MIG_DIR/0021_salary_snapshots_notifications.sql"
+run_sql "$MIG_DIR/0022_goals_kpis_objectives.sql"
+run_sql "$MIG_DIR/0023_review_templates_participants.sql"
+run_sql "$MIG_DIR/0024_training_suggestions.sql"
+run_sql "$MIG_DIR/0025_notifications_extended.sql"
+run_sql "$MIG_DIR/0027_show_risk_to_employee.sql"
 # 3. Seed data
 run_sql "$PG_DIR/seed_data.sql"
 run_sql "$PG_DIR/seed_data_part2.sql"

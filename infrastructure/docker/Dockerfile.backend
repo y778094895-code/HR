@@ -2,6 +2,8 @@
 # Stage 1: Builder
 # =========================
 FROM node:20-alpine AS builder
+# /app mirrors the monorepo root so that relative paths like '../../../shared'
+# resolve the same way in Docker as they do during local development.
 WORKDIR /app
 
 # Native build tools needed for packages like bcrypt
@@ -12,16 +14,17 @@ RUN npm config set fetch-retries 5 \
     && npm config set fetch-retry-mintimeout 20000 \
     && npm config set fetch-retry-maxtimeout 120000
 
-# Copy dependency manifests
-COPY server/package*.json ./
+# Copy dependency manifests — keep server/ as a sub-directory
+COPY server/package*.json ./server/
 COPY shared/package*.json ./shared/
 
 # Install all deps (devDeps required for tsc build)
+WORKDIR /app/server
 RUN npm ci
 
-# Copy source
+# Copy source — shared/ stays at /app/shared/ (one level above server/)
 COPY server/ .
-COPY shared/ ./shared/
+COPY shared/ ../shared/
 
 # Compile TypeScript -> dist/
 RUN npm run build
@@ -31,18 +34,20 @@ RUN npm run build
 # Stage 2: Production runner
 # =========================
 FROM node:20-alpine AS runner
-WORKDIR /app
+WORKDIR /app/server
 
-# Runtime tools + native build tools required for bcrypt re-install
-RUN apk add --no-cache curl python3 make g++
+ENV NODE_ENV=production
 
-# Install production deps only
-COPY --from=builder /app/package*.json ./
-RUN npm ci --omit=dev && npm cache clean --force
+# curl only — no build tools needed (node_modules copied pre-compiled from builder)
+RUN apk add --no-cache curl
 
-# Copy compiled output
-COPY --from=builder /app/dist ./dist
-COPY --from=builder /app/shared ./shared
+# Copy pre-compiled node_modules (bcrypt already compiled in builder)
+COPY --from=builder /app/server/node_modules ./node_modules
+COPY --from=builder /app/server/package*.json ./
+
+# Copy compiled output + shared types (needed at runtime for require paths)
+COPY --from=builder /app/server/dist ./dist
+COPY --from=builder /app/shared ../shared
 
 # Run as non-root
 RUN addgroup -g 1001 -S nodejs \
@@ -52,4 +57,4 @@ USER nodejs
 
 EXPOSE 3000
 
-CMD ["node", "dist/api/index.js"]
+CMD ["node", "dist/server.js"]

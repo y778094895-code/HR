@@ -1,0 +1,66 @@
+{
+  "salary_percentile": {
+    "label_en": "Salary below market median",
+    "label_ar": "الراتب أقل من متوسط السوق"
+  },
+  "salary_gap": {
+    "label_en": "Salary below market median",
+    "label_ar": "الراتب أقل من متوسط السوق"
+  },
+  "tenure_months": {
+    "label_en": "Employee tenure",
+    "label_ar": "مدة الخدمة"
+  },
+  "days_since_last_review": {
+    "label_en": "Time since last performance review",
+    "label_ar": "الوقت منذ آخر تقييم أداء"
+  },
+  "goal_completion_pct": {
+    "label_en": "Goal completion rate",
+    "label_ar": "معدل إنجاز الأهداف"
+  },
+  "attendance_rate": {
+    "label_en": "Attendance rate",
+    "label_ar": "معدل الحضور"
+  },
+  "manager_tenure_months": {
+    "label_en": "Manager tenure (stability)",
+    "label_ar": "مدة خدمة المدير (الاستقرار)"
+  },
+  "department_turnover_rate_12m": {
+    "label_en": "Department turnover rate (12 months)",
+    "label_ar": "معدل دوران القسم (12 شهراً)"
+  },
+  "performance_trend": {
+    "label_en": "Performance score trend",
+    "label_ar": "اتجاه درجة الأداء"
+  },
+  "engagement_score": {
+    "label_en": "Employee engagement score",
+    "label_ar": "درجة انخراط الموظف"
+  },
+  "promotion_months_overdue": {
+    "label_en": "Promotion overdue",
+    "label_ar": "تأخر الترقية"
+  },
+  "workload_score": {
+    "label_en": "Workload intensity",
+    "label_ar": "كثافة عبء العمل"
+  },
+  "recognition_score": {
+    "label_en": "Recognition and appreciation",
+    "label_ar": "الاعتراف والتقدير"
+  },
+  "training_hours_12m": {
+    "label_en": "Training investment (12 months)",
+    "label_ar": "الاستثمار في التدريب (12 شهراً)"
+  },
+  "peer_review_score": {
+    "label_en": "Peer review rating",
+    "label_ar": "تقييم الزملاء"
+  },
+  "absenteeism_rate": {
+    "label_en": "Absenteeism rate",
+    "label_ar": "معدل الغياب"
+  }
+}

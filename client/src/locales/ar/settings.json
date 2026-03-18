@@ -1,0 +1,20 @@
+{
+    "integration": {
+        "title": "تكامل نظام ERP",
+        "baseUrl": "عنوان الخادم",
+        "apiKey": "مفتاح API",
+        "apiSecret": "كلمة سر API (مخفية)",
+        "testConnection": "اختبار الاتصال",
+        "lastSync": "آخر مزامنة",
+        "syncNow": "مزامنة الآن",
+        "syncJobs": "سجل المزامنة",
+        "status": { "success": "ناجح", "failed": "فاشل", "running": "جارٍ", "pending": "معلق" }
+    },
+    "locale": {
+        "title": "اللغة والمنطقة",
+        "language": "لغة العرض",
+        "numerals": "تنسيق الأرقام",
+        "westernDigits": "الأرقام الغربية (0-9)",
+        "dateFormat": "تنسيق التاريخ"
+    }
+}

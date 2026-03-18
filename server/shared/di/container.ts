@@ -48,6 +48,7 @@ import { AuthService } from '../../services/business/auth.service';
 import { AuthMiddleware } from '../../api/middleware/auth.middleware';
 import { CorrelationIdMiddleware } from '../../api/middleware/correlation-id.middleware';
 import { AuditMiddleware } from '../../api/middleware/audit.middleware';
+import { RbacMiddleware } from '../../api/middleware/rbac.middleware';
 import { AuditLogService } from '../../services/business/audit-log.service';
 
 // Controllers
@@ -82,6 +83,23 @@ import { IAttendanceService } from '../../services/interfaces/i-attendance.servi
 import { AttendanceService } from '../../services/business/attendance.service';
 import { NotificationsController } from '../../api/controllers/notifications.controller';
 import { NotificationsRepository } from '../../data/repositories/notifications.repository';
+import { GoalsRepository } from '../../data/repositories/goals.repository';
+import { GoalsService } from '../../services/business/goals.service';
+import { ReviewsRepository } from '../../data/repositories/reviews.repository';
+import { ReviewsService } from '../../services/business/reviews.service';
+import { XaiService } from '../../services/business/xai.service';
+import { AnalyticsService } from '../../services/business/analytics.service';
+import { ExportService } from '../../services/business/export.service';
+import { AnalyticsController } from '../../api/controllers/analytics.controller';
+import {
+    GoalsController,
+    OrgObjectivesController,
+} from '../../api/controllers/goals.controller';
+import {
+    ReviewTemplatesController,
+    ReviewCyclesController,
+    ReviewsController,
+} from '../../api/controllers/reviews.controller';
 
 // Shared
 import { ServiceFactory } from '../../shared/factories/service.factory';
@@ -139,6 +157,21 @@ export class DIContainer {
         // Notifications
         this.container.bind<NotificationsRepository>('NotificationsRepository').to(NotificationsRepository);
 
+        // XAI
+        this.container.bind<XaiService>(XaiService).toSelf().inSingletonScope();
+
+        // Analytics & Export
+        this.container.bind<AnalyticsService>(AnalyticsService).toSelf().inSingletonScope();
+        this.container.bind<ExportService>(ExportService).toSelf();
+
+        // Goals & Objectives
+        this.container.bind<GoalsRepository>(GoalsRepository).toSelf();
+        this.container.bind<GoalsService>(GoalsService).toSelf();
+
+        // Reviews
+        this.container.bind<ReviewsRepository>(ReviewsRepository).toSelf();
+        this.container.bind<ReviewsService>(ReviewsService).toSelf();
+
         // Services (Bind interfaces to implementations)
         this.container.bind<IEmployeeService>('IEmployeeService').to(EmployeeService);
         this.container.bind<IFairnessService>('IFairnessService').to(FairnessService);
@@ -164,8 +197,10 @@ export class DIContainer {
             return new AuthService(userRepo, sessionsRepo, dbConnection);
         });
         this.container.bind<AuthMiddleware>(AuthMiddleware).toSelf();
+        this.container.bind<AuthMiddleware>('AuthMiddleware').to(AuthMiddleware);
         this.container.bind<CorrelationIdMiddleware>(CorrelationIdMiddleware).toSelf();
         this.container.bind<AuditMiddleware>(AuditMiddleware).toSelf();
+        this.container.bind<RbacMiddleware>('RbacMiddleware').to(RbacMiddleware);
         this.container.bind<AuditLogService>('AuditLogService').to(AuditLogService).inSingletonScope();
 
         // Phase E Repos
@@ -242,6 +277,12 @@ export class DIContainer {
         this.container.bind<SalaryController>(SalaryController).toSelf();
         this.container.bind<AttendanceController>(AttendanceController).toSelf();
         this.container.bind<NotificationsController>(NotificationsController).toSelf();
+        this.container.bind<GoalsController>(GoalsController).toSelf();
+        this.container.bind<OrgObjectivesController>(OrgObjectivesController).toSelf();
+        this.container.bind<ReviewTemplatesController>(ReviewTemplatesController).toSelf();
+        this.container.bind<ReviewCyclesController>(ReviewCyclesController).toSelf();
+        this.container.bind<ReviewsController>(ReviewsController).toSelf();
+        this.container.bind<AnalyticsController>(AnalyticsController).toSelf();
 
         // Additional Services
         this.container.bind<TurnoverService>('TurnoverService').to(TurnoverService);

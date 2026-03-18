@@ -3,11 +3,27 @@
     "allow": [
       "Bash(curl -s http://localhost:3000/health)",
       "Bash(curl -s http://localhost:3000/api/health)",
+      "Bash(curl -s http://localhost:8000*)",
       "Bash(docker exec:*)",
       "Bash(docker rm:*)",
       "Bash(docker stop:*)",
       "Bash(docker run:*)",
-      "Bash(docker cp:*)"
+      "Bash(docker cp:*)",
+      "Bash(docker compose:*)",
+      "Bash(cd server && npm run drizzle:*)",
+      "Bash(npm run test:*)",
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:api.github.com)",
+      "Bash(curl -s https://raw.githubusercontent.com/github/spec-kit/main/templates/spec-template.md)",
+      "Bash(curl -s https://raw.githubusercontent.com/github/spec-kit/main/templates/commands/plan.md)",
+      "Bash(curl -s https://raw.githubusercontent.com/github/spec-kit/main/templates/plan-template.md)",
+      "Bash(curl -s \"https://raw.githubusercontent.com/github/spec-kit/main/templates/commands/implement.md\")",
+      "Bash(find d:/مشروع/14-2-2026/2026-2-13/smart_performance_system -maxdepth 1 -name .*ignore)",
+      "Bash(find d:/مشروع/14-2-2026/2026-2-13/smart_performance_system -maxdepth 2 -name *.ts -path */server/*)",
+      "Bash(find d:/مشروع/14-2-2026/2026-2-13/smart_performance_system -maxdepth 1 -name .*)",
+      "Bash(grep -v \"^.$\")",
+      "Bash(xargs cat:*)"
     ]
   }
 }

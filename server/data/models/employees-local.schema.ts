@@ -1,5 +1,5 @@
 
-import { pgTable, uuid, varchar, text, date, decimal, timestamp } from 'drizzle-orm/pg-core';
+import { pgTable, uuid, varchar, text, date, decimal, timestamp, boolean } from 'drizzle-orm/pg-core';
 import { hrDepartments, hrDesignations } from './hr-master.schema';
 
 export const employeesLocal = pgTable('employees_local', {
@@ -27,4 +27,5 @@ export const employeesLocal = pgTable('employees_local', {
     updatedAt: timestamp('updated_at').defaultNow(),
     lastSyncAt: timestamp('last_sync_at'),
     syncStatus: varchar('sync_status', { length: 20 }).default('pending'),
+    showRiskToEmployee: boolean('show_risk_to_employee').default(false).notNull(),
 });

@@ -1,4 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
+import { BaseMiddleware } from 'inversify-express-utils';
+import { injectable } from 'inversify';
 import { ApiResponse } from '../../shared/api-response';
 
 const ROLE_HIERARCHY = ['GUEST', 'EMPLOYEE', 'HR', 'MANAGER', 'ADMIN'] as const;
@@ -35,4 +37,15 @@ export function requireRole(minRole: Role) {
 
         next();
     };
+}
+
+/**
+ * inversify-express-utils compatible RBAC middleware.
+ * Requires at least HR role for protected routes.
+ */
+@injectable()
+export class RbacMiddleware extends BaseMiddleware {
+    public handler(req: Request, res: Response, next: NextFunction): void {
+        requireRole('HR')(req, res, next);
+    }
 }

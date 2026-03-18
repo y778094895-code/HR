@@ -1,0 +1,24 @@
+{
+    "title": "Recommendations",
+    "generate": "Generate Recommendations",
+    "action": "Action",
+    "dismiss": "Dismiss",
+    "actioned": "Actioned",
+    "dismissed": "Dismissed",
+    "source": { "ml": "AI-Generated", "rule_based": "Rule-Based" },
+    "type": {
+        "retention": "Retention",
+        "compensation": "Compensation",
+        "development": "Development",
+        "performance": "Performance"
+    },
+    "confidence": "Confidence",
+    "rationale": "Rationale",
+    "training": {
+        "title": "Training Suggestions",
+        "enroll": "Enroll",
+        "category": "Category",
+        "gap": "Skill Gap",
+        "gapScore": "Gap Score"
+    }
+}

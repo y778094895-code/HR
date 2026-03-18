@@ -1,0 +1,41 @@
+{
+    "title": "الأهداف ومؤشرات الأداء",
+    "myGoals": "أهدافي",
+    "teamGoals": "أهداف الفريق",
+    "objectives": "الأهداف التنظيمية",
+    "addGoal": "إضافة هدف",
+    "editGoal": "تعديل الهدف",
+    "archiveGoal": "أرشفة الهدف",
+    "weight": "الوزن (%)",
+    "weightHint": "مجموع الأوزان يجب ألا يتجاوز 100%",
+    "weightExceeded": "مجموع أوزان الأهداف سيتجاوز 100%",
+    "category": "الفئة",
+    "dueDate": "تاريخ الاستحقاق",
+    "targetValue": "القيمة المستهدفة",
+    "currentValue": "القيمة الحالية",
+    "unit": "الوحدة",
+    "status": {
+        "draft": "مسودة",
+        "in_progress": "قيد التنفيذ",
+        "completed": "مكتمل",
+        "overdue": "متأخر",
+        "archived": "مؤرشف"
+    },
+    "kpi": {
+        "title": "مؤشرات الأداء",
+        "addKpi": "إضافة مؤشر",
+        "frequency": "تكرار القياس",
+        "daily": "يومي",
+        "weekly": "أسبوعي",
+        "monthly": "شهري",
+        "progress": "التقدم"
+    },
+    "objective": {
+        "title": "الهدف التنظيمي",
+        "cascade": "تعميم على الأقسام",
+        "cascaded": "معمَّم",
+        "owner": "المالك",
+        "targetDate": "التاريخ المستهدف",
+        "status": { "active": "نشط", "closed": "مغلق" }
+    }
+}

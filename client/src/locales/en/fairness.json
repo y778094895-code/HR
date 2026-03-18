@@ -1,0 +1,16 @@
+{
+    "title": "Fairness Report",
+    "generate": "Generate Report",
+    "attribute": "Protected Attribute",
+    "attributes": { "gender": "Gender", "department": "Department", "age_group": "Age Group" },
+    "air": "Adverse Impact Ratio (AIR)",
+    "airBelow": "AIR below 0.8 — potential adverse impact",
+    "airOk": "AIR within acceptable range",
+    "group": "Group",
+    "selectionRate": "Selection Rate",
+    "flag": "Flag",
+    "suppressed": "Suppressed (n < 5)",
+    "runDate": "Report Date",
+    "history": "Report History",
+    "noReports": "No fairness reports generated yet"
+}

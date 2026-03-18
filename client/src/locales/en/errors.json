@@ -1,0 +1,11 @@
+{
+    "generic": "Something went wrong. Please try again.",
+    "notFound": "The requested resource was not found.",
+    "unauthorized": "You are not authorised to perform this action.",
+    "forbidden": "Access denied.",
+    "networkError": "Network error. Please check your connection.",
+    "validationError": "Please correct the errors and try again.",
+    "weightExceeded": "Goal weights exceed 100%. Reduce weight before saving.",
+    "reviewAlreadySubmitted": "This review has already been submitted.",
+    "reviewLocked": "This review is locked and cannot be edited."
+}

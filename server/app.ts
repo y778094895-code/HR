@@ -5,6 +5,9 @@ dotenv.config();
 import express from 'express';
 import helmet from 'helmet';
 import cors from 'cors';
+import rateLimit from 'express-rate-limit';
+import pinoHttp from 'pino-http';
+import { logger } from './shared/logger';
 import { InversifyExpressServer } from 'inversify-express-utils';
 import { Container } from 'inversify';
 
@@ -23,8 +26,26 @@ export function buildApp(): { app: express.Application; container: Container } {
     const server = new InversifyExpressServer(container, null, { rootPath: '/api' });
 
     server.setConfig((app) => {
+        // Structured request logging — attaches req.log / res.log and emits one line per request
+        app.use(pinoHttp({
+            logger,
+            // Attach x-correlation-id as a log field
+            customProps: (req) => ({ correlationId: (req as any).correlationId }),
+            // Skip health-check noise
+            autoLogging: { ignore: (req) => req.url === '/health' },
+        }));
+
         // Security headers
         app.use(helmet());
+
+        // Rate limiting — 100 requests per minute per IP
+        app.use(rateLimit({
+            windowMs: 60_000,
+            max: 100,
+            standardHeaders: true,
+            legacyHeaders: false,
+            message: { success: false, message: 'Too many requests, please try again later.' },
+        }));
 
         // CORS
         app.use(cors({

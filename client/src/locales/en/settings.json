@@ -1,0 +1,20 @@
+{
+    "integration": {
+        "title": "ERP Integration",
+        "baseUrl": "Base URL",
+        "apiKey": "API Key",
+        "apiSecret": "API Secret (masked)",
+        "testConnection": "Test Connection",
+        "lastSync": "Last Synced",
+        "syncNow": "Sync Now",
+        "syncJobs": "Sync Job History",
+        "status": { "success": "Success", "failed": "Failed", "running": "Running", "pending": "Pending" }
+    },
+    "locale": {
+        "title": "Language & Region",
+        "language": "Display Language",
+        "numerals": "Numeral Format",
+        "westernDigits": "Western digits (0-9)",
+        "dateFormat": "Date Format"
+    }
+}

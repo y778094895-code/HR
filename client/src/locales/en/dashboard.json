@@ -1,0 +1,13 @@
+{
+    "kpis": "Key Performance Indicators",
+    "riskDistribution": "Risk Distribution by Department",
+    "goalCompletion": "Goal Completion Rate",
+    "equityMetrics": "Equity Metrics",
+    "genderPayGap": "Gender Pay Gap",
+    "ratingGap": "Rating Gap",
+    "suppressed": "Suppressed (n < 5)",
+    "export": "Export",
+    "csv": "CSV",
+    "xlsx": "Excel",
+    "scope": { "employee": "My Dashboard", "manager": "Team Dashboard", "hr": "HR Dashboard", "admin": "Admin Dashboard" }
+}

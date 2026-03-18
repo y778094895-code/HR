@@ -46,3 +46,6 @@ import './controllers/cases.controller';
 import './controllers/salary.controller';
 import './controllers/attendance.controller';
 import './controllers/notifications.controller';
+import './controllers/goals.controller';
+import './controllers/reviews.controller';
+import './controllers/analytics.controller';

@@ -70,7 +70,7 @@ services:
       DB_PASSWORD: ${POSTGRES_PASSWORD}
       DB_NAME: ${POSTGRES_DB}
       # App
-      NODE_ENV: ${NODE_ENV:-development}
+      NODE_ENV: ${NODE_ENV:-production}
       BACKEND_PORT: ${BACKEND_PORT:-3000}
       BACKEND_HOST: ${BACKEND_HOST:-0.0.0.0}
       # Auth
@@ -95,6 +95,8 @@ services:
       timeout: 5s
       retries: 3
       start_period: 30s
+    volumes:
+      - ./postgres:/app/postgres:ro
     depends_on:
       postgres:
         condition: service_healthy

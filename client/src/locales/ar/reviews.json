@@ -1,0 +1,30 @@
+{
+    "title": "تقييمات الأداء",
+    "myTasks": "مهام التقييم",
+    "cycleManagement": "إدارة الدورات",
+    "templates": "قوالب التقييم",
+    "newCycle": "دورة جديدة",
+    "launchCycle": "إطلاق الدورة",
+    "closeCycle": "إغلاق الدورة",
+    "calibration": "قيد المعايرة",
+    "assignReviewer": "تعيين مراجع",
+    "submitReview": "تقديم التقييم",
+    "saveDraft": "حفظ المسودة",
+    "lockReview": "قفل التقييم",
+    "acknowledge": "استلام",
+    "compositeScore": "الدرجة المجمعة",
+    "goalAttainment": "تحقيق الأهداف",
+    "selfReview": "تقييم ذاتي",
+    "managerReview": "تقييم المدير",
+    "peerReview": "تقييم الأقران",
+    "cycleType": { "annual": "سنوي", "mid_year": "منتصف العام", "quarterly": "ربع سنوي", "probation": "فترة تجريبية" },
+    "cycleStatus": { "draft": "مسودة", "active": "نشط", "calibration": "معايرة", "closed": "مغلق" },
+    "participantStatus": { "pending": "قيد الانتظار", "in_progress": "قيد التنفيذ", "submitted": "مُقدَّم", "overdue": "متأخر" },
+    "reviewStatus": { "draft": "مسودة", "submitted": "مُقدَّم", "locked": "مقفل", "acknowledged": "تم الاستلام" },
+    "report": {
+        "title": "تقرير التقييم",
+        "aggregatedScores": "الدرجات المجمعة",
+        "peerCommentsHidden": "تعليقات الأقران مجهولة المصدر",
+        "noSubmittedReviews": "لا توجد تقييمات مقدمة"
+    }
+}
