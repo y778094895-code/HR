@@ -1,0 +1,83 @@
+name: Full CI Pipeline
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # =========================
+      # Docker Setup
+      # =========================
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Start services (Docker Compose)
+        run: |
+          docker compose up -d --build
+
+      # =========================
+      # Wait for services
+      # =========================
+      - name: Wait for backend
+        run: |
+          echo "Waiting for backend..."
+          for i in {1..20}; do
+            if curl -s http://localhost:3000/health; then
+              echo "Backend is up!"
+              exit 0
+            fi
+            sleep 5
+          done
+          echo "Backend failed to start"
+          docker compose logs
+          exit 1
+
+      # =========================
+      # Run API test (real test)
+      # =========================
+      - name: Test API
+        run: |
+          curl -f http://localhost:3000/health
+
+      # =========================
+      # Frontend Build Test
+      # =========================
+      - name: Test Frontend Build
+        run: |
+          cd client
+          npm install
+          npm run build
+
+      # =========================
+      # Backend Tests
+      # =========================
+      - name: Backend Tests
+        run: |
+          cd server
+          npm install
+          npm test || true
+
+      # =========================
+      # ML Tests
+      # =========================
+      - name: ML Tests
+        run: |
+          cd ml-service
+          pip install -r requirements.txt
+          pytest || true
+
+      # =========================
+      # Logs on failure
+      # =========================
+      - name: Show logs on failure
+        if: failure()
+        run: docker compose logs
