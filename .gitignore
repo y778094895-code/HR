@@ -1,57 +1,60 @@
 # =============================================
-# Smart HR System — .gitignore
+# Smart HR System — GitHub-ready .gitignore
 # =============================================
 
-# ── Environment variables (NEVER commit secrets) ──
+# Secrets / environment
 .env
-.env.local
-.env.*.local
+*.env
+.env.*
+!.env.example
+!*.env.example
 server/.env
 client/.env
+infrastructure/api-gateway/.env
 
-# ── Dependencies ──
+# Dependencies
 node_modules/
+
+# Build output
+dist/
+build/
+client/dist/
+server/dist/
+.next/
+
+# Python cache / artifacts
 __pycache__/
 *.pyc
 *.pyo
 .pytest_cache/
-.pnp/
-.pnp.js
-
-# ── Build outputs ──
-dist/
-build/
+.ipynb_checkpoints/
 *.egg-info/
-.next/
 
-# ── Docker volumes data ──
-postgres-data/
-ml-models/
+# Coverage / reports
+coverage/
+.nyc_output/
+playwright-report/
+test-results/
 
-# ── IDE ──
+# Logs
+*.log
+logs/
+*.log.*
+
+# IDE / OS
 .vscode/
 .idea/
 *.swp
 *.swo
 *~
-
-# ── Logs ──
-*.log
-logs/
-*.log.*
-
-# ── OS ──
 .DS_Store
 Thumbs.db
 desktop.ini
 
-# ── Test output ──
-playwright-report/
-test-results/
-coverage/
-.nyc_output/
-
-# ── Stale artifacts (one-off scripts, transient outputs) ──
+# Local data / dev artifacts
+postgres-data/
+ml-models/
+mlflow.db
 *.zip
 *.bak
 logs.txt
@@ -64,14 +67,4 @@ ts_errors.txt
 ts_errors_plain.txt
 typescript-errors.txt
 typescript-errors-utf8.txt
-
-# ── Vite cache ──
 vite.config.ts.timestamp-*
-
-# ── MLflow dev database ──
-mlflow.db
-
-# ── Lock files (pick ONE package manager) ──
-# Uncomment the one you do NOT use:
-# pnpm-lock.yaml
-# package-lock.json
